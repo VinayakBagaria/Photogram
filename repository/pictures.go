@@ -6,7 +6,7 @@ import (
 )
 
 type PicturesRepository interface {
-	Save(*db.Picture) error
+	Create(*db.Picture) error
 	GetById(string) (*db.Picture, error)
 	GetAll() ([]*db.Picture, error)
 	Update(*db.Picture) error
@@ -21,7 +21,8 @@ func NewPicturesRepository(dbHandler *gorm.DB) PicturesRepository {
 	return &picturesRepository{db: dbHandler}
 }
 
-func (p *picturesRepository) Save(picture *db.Picture) error {
+func (p *picturesRepository) Create(picture *db.Picture) error {
+	p.db.Create(&picture)
 	return nil
 }
 
@@ -30,7 +31,6 @@ func (p *picturesRepository) GetById(id string) (*db.Picture, error) {
 }
 
 func (p *picturesRepository) GetAll() ([]*db.Picture, error) {
-	// rows, err := p.db.
 	var pictures []*db.Picture
 	p.db.Find(&pictures)
 	return pictures, nil

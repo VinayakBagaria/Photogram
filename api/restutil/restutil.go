@@ -1,24 +1,17 @@
 package restutil
 
 import (
-	"encoding/json"
-	"net/http"
+	"github.com/gin-gonic/gin"
 )
 
-type jsonError struct {
-	Error string `json:"error"`
+func WriteAsJson(c *gin.Context, statusCode int, data gin.H) {
+	c.JSON(statusCode, data)
 }
 
-func WriteAsJson(w http.ResponseWriter, statusCode int, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(statusCode)
-	json.NewEncoder(w).Encode(data)
-}
-
-func WriteError(w http.ResponseWriter, statusCode int, err error) {
+func WriteError(c *gin.Context, statusCode int, err error) {
 	e := "error"
 	if err != nil {
 		e = err.Error()
 	}
-	WriteAsJson(w, statusCode, jsonError{e})
+	WriteAsJson(c, statusCode, gin.H{"error": e})
 }

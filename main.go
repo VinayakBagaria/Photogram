@@ -12,7 +12,7 @@ import (
 	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/repository"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	handlers := resthandlers.NewPicturesHandlers(service)
 	routesList := routes.NewPicturesRoutes(handlers)
 
-	router := mux.NewRouter().StrictSlash(true)
+	router := gin.Default()
 	routes.Install(router, routesList)
 
 	apiPort, err := strconv.Atoi(config.GetEnvString("server.port"))

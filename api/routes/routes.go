@@ -1,20 +1,17 @@
 package routes
 
 import (
-	"net/http"
-
-	"github.com/VinayakBagaria/go-cat-pictures/api/middlewares"
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 type Route struct {
 	Path    string
 	Method  string
-	Handler http.HandlerFunc
+	Handler gin.HandlerFunc
 }
 
-func Install(router *mux.Router, routeList []*Route) {
+func Install(router *gin.Engine, routeList []*Route) {
 	for _, route := range routeList {
-		router.Handle(route.Path, middlewares.LogRequests(route.Handler)).Methods(route.Method)
+		router.Handle(route.Method, route.Path, route.Handler)
 	}
 }

@@ -1,6 +1,7 @@
 package db
 
 type Picture struct {
-	ID   string `sql:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	ID   uint   `json:"id" gorm:"primary_key"`
 	Name string `json:"name"`
+	Url  string `json:"url"`
 }
