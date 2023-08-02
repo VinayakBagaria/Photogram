@@ -7,10 +7,10 @@ import (
 
 type PicturesRepository interface {
 	Create(*db.Picture) error
-	GetById(string) (*db.Picture, error)
+	GetById(int) (*db.Picture, error)
 	GetAll() ([]*db.Picture, error)
 	Update(*db.Picture) error
-	Delete(id string) error
+	Delete(id int) error
 }
 
 type picturesRepository struct {
@@ -26,7 +26,7 @@ func (p *picturesRepository) Create(picture *db.Picture) error {
 	return nil
 }
 
-func (p *picturesRepository) GetById(id string) (*db.Picture, error) {
+func (p *picturesRepository) GetById(id int) (*db.Picture, error) {
 	return nil, nil
 }
 
@@ -40,13 +40,8 @@ func (p *picturesRepository) Update(picture *db.Picture) error {
 	return nil
 }
 
-func (p *picturesRepository) Delete(id string) error {
+func (p *picturesRepository) Delete(id int) error {
 	var picture db.Picture
-
-	if err := p.db.Where("?id=", id).First(&picture).Error; err != nil {
-		return err
-	}
-
-	p.db.Delete(&picture)
+	p.db.Where("id=?", id).Delete(&picture)
 	return nil
 }
