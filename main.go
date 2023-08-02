@@ -18,8 +18,8 @@ import (
 func main() {
 	config.Init()
 
-	cfg := db.NewConfiguration()
-	dbHandler, err := db.NewConnection(cfg)
+	dbConfig := db.NewConfiguration()
+	dbHandler, err := db.NewConnection(dbConfig)
 	if err != nil {
 		log.Panicln(err)
 	}

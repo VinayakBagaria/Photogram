@@ -6,9 +6,9 @@ import (
 )
 
 type PicturesService interface {
-	ListPictures() ([]*db.Picture, error)
-	GetPicture(int) (*db.Picture, error)
-	CreatePicture(CreatePictureInput) (db.Picture, error)
+	List() ([]*db.Picture, error)
+	Get(int) (*db.Picture, error)
+	Create(CreatePictureInput) (db.Picture, error)
 	Delete(int) error
 }
 
@@ -20,17 +20,17 @@ func NewPicturesService(picturesRepository repository.PicturesRepository) Pictur
 	return &picturesService{repository: picturesRepository}
 }
 
-func (s *picturesService) ListPictures() ([]*db.Picture, error) {
+func (s *picturesService) List() ([]*db.Picture, error) {
 	pictures, err := s.repository.GetAll()
 	return pictures, err
 }
 
-func (s *picturesService) GetPicture(id int) (*db.Picture, error) {
+func (s *picturesService) Get(id int) (*db.Picture, error) {
 	picture, err := s.repository.GetById(id)
 	return picture, err
 }
 
-func (s *picturesService) CreatePicture(pictureInput CreatePictureInput) (db.Picture, error) {
+func (s *picturesService) Create(pictureInput CreatePictureInput) (db.Picture, error) {
 	picture := db.Picture{Name: pictureInput.Name, Url: pictureInput.Url}
 	err := s.repository.Create(&picture)
 	return picture, err

@@ -10,7 +10,7 @@ import (
 )
 
 type PicturesHandler interface {
-	GetPictures(*gin.Context)
+	ListPictures(*gin.Context)
 	GetPicture(*gin.Context)
 	CreatePicture(*gin.Context)
 	DeletePicture(*gin.Context)
@@ -24,8 +24,8 @@ func NewPicturesHandlers(picturesService service.PicturesService) PicturesHandle
 	return &picturesHandler{svc: picturesService}
 }
 
-func (h *picturesHandler) GetPictures(c *gin.Context) {
-	pictures, err := h.svc.ListPictures()
+func (h *picturesHandler) ListPictures(c *gin.Context) {
+	pictures, err := h.svc.List()
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
@@ -41,7 +41,7 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 		return
 	}
 
-	picture, err := h.svc.GetPicture(id)
+	picture, err := h.svc.Get(id)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
@@ -57,7 +57,7 @@ func (h *picturesHandler) CreatePicture(c *gin.Context) {
 		return
 	}
 
-	picture, err := h.svc.CreatePicture(input)
+	picture, err := h.svc.Create(input)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
