@@ -20,5 +20,11 @@ func NewPicturesHandlers(picturesService service.PicturesService) PicturesHandle
 }
 
 func (h *picturesHandlers) GetPictures(w http.ResponseWriter, r *http.Request) {
-	restutil.WriteAsJson(w, http.StatusOK, "Yes response is here")
+	pictures, err := h.picturesService.ListPictures()
+	if err != nil {
+		restutil.WriteError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	restutil.WriteAsJson(w, http.StatusOK, pictures)
 }
