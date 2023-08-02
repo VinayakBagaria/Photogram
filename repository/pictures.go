@@ -1,12 +1,12 @@
 package repository
 
-import "github.com/VinayakBagaria/go-cat-pictures/models"
+import "github.com/VinayakBagaria/go-cat-pictures/db"
 
 type PicturesRepository interface {
-	Save(*models.Picture) error
-	GetById(string) (*models.Picture, error)
-	GetAll() ([]*models.Picture, error)
-	Update(*models.Picture) error
+	Save(*db.Picture) error
+	GetById(string) (*db.Picture, error)
+	GetAll() ([]*db.Picture, error)
+	Update(*db.Picture) error
 }
 
 type picturesRepository struct {
@@ -16,18 +16,18 @@ func NewPicturesRepository() PicturesRepository {
 	return &picturesRepository{}
 }
 
-func (p *picturesRepository) Save(picture *models.Picture) error {
+func (p *picturesRepository) Save(picture *db.Picture) error {
 	return nil
 }
 
-func (p *picturesRepository) GetById(id string) (*models.Picture, error) {
+func (p *picturesRepository) GetById(id string) (*db.Picture, error) {
 	return nil, nil
 }
 
-func (p *picturesRepository) GetAll() ([]*models.Picture, error) {
-	return []*models.Picture{}, nil
+func (p *picturesRepository) GetAll() ([]*db.Picture, error) {
+	return []*db.Picture{}, nil
 }
 
-func (p *picturesRepository) Update(picture *models.Picture) error {
+func (p *picturesRepository) Update(picture *db.Picture) error {
 	return nil
 }
