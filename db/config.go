@@ -2,8 +2,6 @@ package db
 
 import (
 	"fmt"
-	"log"
-	"strconv"
 
 	"github.com/VinayakBagaria/go-cat-pictures/config"
 )
@@ -21,11 +19,7 @@ func NewConfiguration() Configuration {
 	dbUser := config.GetEnvString("postgres.user")
 	dbPass := config.GetEnvString("postgres.password")
 	dbHost := config.GetEnvString("postgres.host")
-
-	dbPort, err := strconv.Atoi(config.GetEnvString("postgres.port"))
-	if err != nil {
-		log.Fatalln("Unable to load env")
-	}
+	dbPort := config.GetEnvString("postgres.port")
 
 	dbName := config.GetEnvString("postgres.dbname")
 	cfg.dsn = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", dbHost, dbPort, dbUser, dbPass, dbName)

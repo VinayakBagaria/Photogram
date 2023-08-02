@@ -1,9 +1,8 @@
 package repository
 
 import (
-	"database/sql"
-
 	"github.com/VinayakBagaria/go-cat-pictures/db"
+	"gorm.io/gorm"
 )
 
 type PicturesRepository interface {
@@ -15,10 +14,10 @@ type PicturesRepository interface {
 }
 
 type picturesRepository struct {
-	db *sql.DB
+	db *gorm.DB
 }
 
-func NewPicturesRepository(dbHandler *sql.DB) PicturesRepository {
+func NewPicturesRepository(dbHandler *gorm.DB) PicturesRepository {
 	return &picturesRepository{db: dbHandler}
 }
 
@@ -31,22 +30,9 @@ func (p *picturesRepository) GetById(id string) (*db.Picture, error) {
 }
 
 func (p *picturesRepository) GetAll() ([]*db.Picture, error) {
-	rows, err := p.db.Query("SELECT ")
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	pictures := []*db.Picture{}
-	for rows.Next() {
-		var p *db.Picture
-		if err := rows.Scan(&p.ID, &p.Name); err != nil {
-			return nil, err
-		}
-
-		pictures = append(pictures, p)
-	}
-
+	// rows, err := p.db.
+	var pictures []*db.Picture
+	p.db.Find(&pictures)
 	return pictures, nil
 }
 
@@ -55,5 +41,12 @@ func (p *picturesRepository) Update(picture *db.Picture) error {
 }
 
 func (p *picturesRepository) Delete(id string) error {
+	var picture db.Picture
+
+	if err := p.db.Where("?id=", id).First(&picture).Error; err != nil {
+		return err
+	}
+
+	p.db.Delete(&picture)
 	return nil
 }

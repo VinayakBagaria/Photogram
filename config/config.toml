@@ -2,8 +2,8 @@
     port = "8000"
 
 [postgres]
-    user = "pguser"
-    password = "pguser"
+    user = "postgres"
+    password = ""
     host = "localhost"
-    port = "5632"
+    port = "5432"
     dbname = "pictures"
