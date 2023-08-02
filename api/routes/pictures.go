@@ -9,6 +9,7 @@ import (
 func NewPicturesRoutes(handlers resthandlers.PicturesHandler) []*Route {
 	return []*Route{
 		{Path: "/", Method: http.MethodGet, Handler: handlers.GetPictures},
+		{Path: "/picture/:id", Method: http.MethodGet, Handler: handlers.GetPicture},
 		{Path: "/", Method: http.MethodPost, Handler: handlers.CreatePicture},
 		{Path: "/picture/:id", Method: http.MethodDelete, Handler: handlers.DeletePicture},
 	}

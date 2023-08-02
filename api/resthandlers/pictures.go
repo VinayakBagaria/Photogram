@@ -11,6 +11,7 @@ import (
 
 type PicturesHandler interface {
 	GetPictures(*gin.Context)
+	GetPicture(*gin.Context)
 	CreatePicture(*gin.Context)
 	DeletePicture(*gin.Context)
 }
@@ -31,6 +32,22 @@ func (h *picturesHandler) GetPictures(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, gin.H{"pictures": pictures})
+}
+
+func (h *picturesHandler) GetPicture(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	picture, err := h.svc.GetPicture(id)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
 }
 
 func (h *picturesHandler) CreatePicture(c *gin.Context) {

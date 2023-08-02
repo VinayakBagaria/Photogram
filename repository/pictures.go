@@ -27,7 +27,13 @@ func (p *picturesRepository) Create(picture *db.Picture) error {
 }
 
 func (p *picturesRepository) GetById(id int) (*db.Picture, error) {
-	return nil, nil
+	var picture *db.Picture
+
+	if err := p.db.Where("id=?", id).First(&picture).Error; err != nil {
+		return nil, err
+	}
+
+	return picture, nil
 }
 
 func (p *picturesRepository) GetAll() ([]*db.Picture, error) {
