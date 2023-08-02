@@ -12,5 +12,6 @@ func NewPicturesRoutes(handlers resthandlers.PicturesHandler) []*Route {
 		{Path: "/picture/:id", Method: http.MethodGet, Handler: handlers.GetPicture},
 		{Path: "/", Method: http.MethodPost, Handler: handlers.CreatePicture},
 		{Path: "/picture/:id", Method: http.MethodDelete, Handler: handlers.DeletePicture},
+		{Path: "/picture/:id", Method: http.MethodPut, Handler: handlers.UpdatePicture},
 	}
 }

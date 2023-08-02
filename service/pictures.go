@@ -2,14 +2,16 @@ package service
 
 import (
 	"github.com/VinayakBagaria/go-cat-pictures/db"
+	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/repository"
 )
 
 type PicturesService interface {
 	List() ([]*db.Picture, error)
 	Get(int) (*db.Picture, error)
-	Create(CreatePictureInput) (db.Picture, error)
+	Create(dto.CreatePictureInput) (*db.Picture, error)
 	Delete(int) error
+	Update(int, dto.UpdatePictureInput) (*db.Picture, error)
 }
 
 type picturesService struct {
@@ -30,13 +32,17 @@ func (s *picturesService) Get(id int) (*db.Picture, error) {
 	return picture, err
 }
 
-func (s *picturesService) Create(pictureInput CreatePictureInput) (db.Picture, error) {
-	picture := db.Picture{Name: pictureInput.Name, Url: pictureInput.Url}
-	err := s.repository.Create(&picture)
+func (s *picturesService) Create(pictureInput dto.CreatePictureInput) (*db.Picture, error) {
+	picture, err := s.repository.Create(pictureInput)
 	return picture, err
 }
 
 func (s *picturesService) Delete(id int) error {
 	err := s.repository.Delete(id)
 	return err
+}
+
+func (s *picturesService) Update(id int, pictureInput dto.UpdatePictureInput) (*db.Picture, error) {
+	picture, err := s.repository.Update(id, pictureInput)
+	return picture, err
 }
