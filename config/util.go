@@ -2,6 +2,6 @@ package config
 
 import "github.com/spf13/viper"
 
-func GetEnvString(key string) string {
+func GetConfigValue(key string) string {
 	return viper.GetString(key)
 }

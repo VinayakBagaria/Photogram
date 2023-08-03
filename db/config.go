@@ -20,11 +20,11 @@ type configuration struct {
 
 func NewConfiguration() Configuration {
 	var cfg configuration
-	cfg.dbUser = config.GetEnvString("postgres.user")
-	cfg.dbPass = config.GetEnvString("postgres.password")
-	cfg.dbHost = config.GetEnvString("postgres.host")
-	cfg.dbPort = config.GetEnvString("postgres.port")
-	cfg.dbName = config.GetEnvString("postgres.dbname")
+	cfg.dbUser = config.GetConfigValue("postgres.user")
+	cfg.dbPass = config.GetConfigValue("postgres.password")
+	cfg.dbHost = config.GetConfigValue("postgres.host")
+	cfg.dbPort = config.GetConfigValue("postgres.port")
+	cfg.dbName = config.GetConfigValue("postgres.dbname")
 	return cfg
 }
 

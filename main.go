@@ -26,7 +26,7 @@ func main() {
 	}
 
 	repository := repository.NewPicturesRepository(dbHandler)
-	localStorage := storage.NewStorage("./images")
+	localStorage := storage.NewStorage(config.GetConfigValue("server.imagePath"))
 	service := service.NewPicturesService(repository, localStorage)
 	handler := resthandlers.NewPicturesHandler(service)
 	routesList := routes.NewPicturesRoutes(handler)
@@ -45,7 +45,7 @@ func main() {
 	routes.Install(router, routesList)
 	routes.Install(router, serverRoutesList)
 
-	apiPort, err := strconv.Atoi(config.GetEnvString("server.port"))
+	apiPort, err := strconv.Atoi(config.GetConfigValue("server.port"))
 	if err != nil {
 		log.Fatalln("Unable to parse api port")
 	}
