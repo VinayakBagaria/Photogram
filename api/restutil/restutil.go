@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func WriteAsJson(c *gin.Context, statusCode int, data gin.H) {
+func WriteAsJson(c *gin.Context, statusCode int, data any) {
 	c.JSON(statusCode, data)
 }
 

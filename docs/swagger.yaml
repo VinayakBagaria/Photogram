@@ -1,4 +1,32 @@
+definitions:
+  dto.ListPicturesResponse:
+    properties:
+      pictures:
+        items:
+          $ref: '#/definitions/dto.PictureResponse'
+        type: array
+    type: object
+  dto.PictureResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+      url:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ListPicturesResponse'
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: list of pictures
 swagger: "2.0"

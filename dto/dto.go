@@ -15,3 +15,7 @@ type PictureResponse struct {
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }
+
+type ListPicturesResponse struct {
+	Pictures []PictureResponse `json:"pictures"`
+}

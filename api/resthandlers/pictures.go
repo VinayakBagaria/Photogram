@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
+	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 	"github.com/gin-gonic/gin"
 )
@@ -26,6 +27,11 @@ func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler
 	return &picturesHandler{svc: picturesService}
 }
 
+// List of pictures along with its metadata
+// @Summary list of pictures
+// @Success 200 {object} dto.ListPicturesResponse
+// @Failure 500 {object} error
+// @Router / [get]
 func (h *picturesHandler) ListPictures(c *gin.Context) {
 	pictures, err := h.svc.List()
 	if err != nil {
@@ -33,7 +39,7 @@ func (h *picturesHandler) ListPictures(c *gin.Context) {
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, gin.H{"pictures": pictures})
+	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{Pictures: pictures})
 }
 
 func (h *picturesHandler) GetPicture(c *gin.Context) {
