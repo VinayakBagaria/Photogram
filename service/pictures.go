@@ -28,11 +28,11 @@ func NewPicturesService(repository repository.PicturesRepository, storage storag
 
 func (s *picturesService) List() ([]dto.PictureResponse, error) {
 	pictures, err := s.repository.GetAll()
-	var pictureResponses []dto.PictureResponse
 	if err != nil {
-		return pictureResponses, err
+		return nil, err
 	}
 
+	pictureResponses := make([]dto.PictureResponse, 0, len(pictures))
 	for _, eachPicture := range pictures {
 		pictureResponses = append(pictureResponses, eachPicture.ToPictureResponse())
 	}
@@ -54,7 +54,7 @@ func (s *picturesService) GetFile(id int) (string, error) {
 		return "", err
 	}
 
-	return picture.Destination, nil
+	return s.storage.GetFullPath(picture.Destination), nil
 }
 
 func (s *picturesService) Create(file *multipart.FileHeader) (dto.PictureResponse, error) {

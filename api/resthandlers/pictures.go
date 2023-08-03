@@ -27,8 +27,9 @@ func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler
 	return &picturesHandler{svc: picturesService}
 }
 
-// List of pictures along with its metadata
+// List of pictures
 // @Summary list of pictures
+// @Description List of pictures along with its metadata
 // @Success 200 {object} dto.ListPicturesResponse
 // @Failure 500 {object} error
 // @Router / [get]
@@ -58,6 +59,13 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
 }
 
+// Get a image
+// @Summary get a image
+// @Description Get a specified image file by its ID
+// @Param id path number true "Image Id"
+// @Success 200 {file} octet-stream
+// @Failure 500 {object} error
+// @Router /picture/{id}/image [get]
 func (h *picturesHandler) GetPictureFile(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -71,7 +79,7 @@ func (h *picturesHandler) GetPictureFile(c *gin.Context) {
 		return
 	}
 
-	http.ServeFile(c.Writer, c.Request, "./images/"+pictureDestination)
+	http.ServeFile(c.Writer, c.Request, pictureDestination)
 }
 
 func (h *picturesHandler) CreatePicture(c *gin.Context) {

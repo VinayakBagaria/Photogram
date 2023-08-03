@@ -20,6 +20,7 @@ info:
 paths:
   /:
     get:
+      description: List of pictures along with its metadata
       responses:
         "200":
           description: OK
@@ -29,4 +30,22 @@ paths:
           description: Internal Server Error
           schema: {}
       summary: list of pictures
+  /picture/{id}/image:
+    get:
+      description: Get a specified image file by its ID
+      parameters:
+      - description: Image Id
+        in: path
+        name: id
+        required: true
+        type: number
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "500":
+          description: Internal Server Error
+          schema: {}
+      summary: get a image
 swagger: "2.0"

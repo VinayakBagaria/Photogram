@@ -6,12 +6,40 @@
     "paths": {
         "/": {
             "get": {
+                "description": "List of pictures along with its metadata",
                 "summary": "list of pictures",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/dto.ListPicturesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/picture/{id}/image": {
+            "get": {
+                "description": "Get a specified image file by its ID",
+                "summary": "get a image",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Image Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
                         }
                     },
                     "500": {

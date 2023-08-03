@@ -11,6 +11,7 @@ import (
 )
 
 type Storage interface {
+	GetFullPath(string) string
 	Save(*multipart.FileHeader) (string, error)
 	Get(string) ([]byte, error)
 }
@@ -23,10 +24,14 @@ func NewStorage(path string) Storage {
 	return &localStorage{path}
 }
 
+func (s *localStorage) GetFullPath(destination string) string {
+	return s.path + "/" + destination
+}
+
 func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 	extension := filepath.Ext(file.Filename)
 	destination := uuid.New().String() + extension
-	path := s.path + "/" + destination
+	fullPath := s.GetFullPath(destination)
 
 	src, err := file.Open()
 	if err != nil {
@@ -34,7 +39,7 @@ func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 	}
 	defer src.Close()
 
-	out, err := os.Create(path)
+	out, err := os.Create(fullPath)
 	if err != nil {
 		return "", err
 	}
@@ -45,8 +50,8 @@ func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 }
 
 func (s *localStorage) Get(destination string) ([]byte, error) {
-	path := s.path + "/" + destination
-	file, err := os.Open(path)
+	fullPath := s.GetFullPath(destination)
+	file, err := os.Open(fullPath)
 	if err != nil {
 		return nil, err
 	}
