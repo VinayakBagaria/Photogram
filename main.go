@@ -26,13 +26,18 @@ func main() {
 
 	repository := repository.NewPicturesRepository(dbHandler)
 	service := service.NewPicturesService(repository)
-	handlers := resthandlers.NewPicturesHandlers(service)
-	routesList := routes.NewPicturesRoutes(handlers)
+	handler := resthandlers.NewPicturesHandler(service)
+	routesList := routes.NewPicturesRoutes(handler)
+
+	serverHandler := resthandlers.NewServerHandler()
+	serverRoutesList := routes.NewServerRouteList(serverHandler)
 
 	router := gin.Default()
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.Static("/get-image", "./images")
+
 	routes.Install(router, routesList)
+	routes.Install(router, serverRoutesList)
 
 	apiPort, err := strconv.Atoi(config.GetEnvString("server.port"))
 	if err != nil {

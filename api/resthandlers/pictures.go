@@ -25,7 +25,7 @@ type picturesHandler struct {
 	svc service.PicturesService
 }
 
-func NewPicturesHandlers(picturesService service.PicturesService) PicturesHandler {
+func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler {
 	return &picturesHandler{svc: picturesService}
 }
 
