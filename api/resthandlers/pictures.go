@@ -11,12 +11,12 @@ import (
 )
 
 type PicturesHandler interface {
+	CreatePicture(*gin.Context)
+	UpdatePicture(*gin.Context)
 	ListPictures(*gin.Context)
 	GetPicture(*gin.Context)
 	GetPictureFile(*gin.Context)
-	CreatePicture(*gin.Context)
 	DeletePicture(*gin.Context)
-	UpdatePicture(*gin.Context)
 }
 
 type picturesHandler struct {
@@ -25,6 +25,67 @@ type picturesHandler struct {
 
 func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler {
 	return &picturesHandler{svc: picturesService}
+}
+
+// Get a image
+// @Summary get a image
+// @Description Get a specified image file by its ID
+// @Param id path number true "Image Id"
+// @Success 200 {file} octet-stream
+// @Failure 500 {object} error
+// @Router /picture/{id}/image [get]
+func (h *picturesHandler) GetPictureFile(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	pictureDestination, err := h.svc.GetFile(id)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	http.ServeFile(c.Writer, c.Request, pictureDestination)
+}
+
+func (h *picturesHandler) CreatePicture(c *gin.Context) {
+	file, err := c.FormFile("image")
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	response, createError := h.svc.Create(file)
+	if err != nil {
+		restutil.WriteError(c, createError.StatusCode, createError.Error)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": response})
+}
+
+func (h *picturesHandler) UpdatePicture(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	file, err := c.FormFile("image")
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	response, updatedError := h.svc.Update(id, file)
+	if err != nil {
+		restutil.WriteError(c, updatedError.StatusCode, updatedError.Error)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": response})
 }
 
 // List of pictures
@@ -59,45 +120,6 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
 }
 
-// Get a image
-// @Summary get a image
-// @Description Get a specified image file by its ID
-// @Param id path number true "Image Id"
-// @Success 200 {file} octet-stream
-// @Failure 500 {object} error
-// @Router /picture/{id}/image [get]
-func (h *picturesHandler) GetPictureFile(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	pictureDestination, err := h.svc.GetFile(id)
-	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	http.ServeFile(c.Writer, c.Request, pictureDestination)
-}
-
-func (h *picturesHandler) CreatePicture(c *gin.Context) {
-	file, err := c.FormFile("image")
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	response, err := h.svc.Create(file)
-	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": response})
-}
-
 func (h *picturesHandler) DeletePicture(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -111,26 +133,4 @@ func (h *picturesHandler) DeletePicture(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": true})
-}
-
-func (h *picturesHandler) UpdatePicture(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	file, err := c.FormFile("image")
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	picture, err := h.svc.Update(id, file)
-	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
 }
