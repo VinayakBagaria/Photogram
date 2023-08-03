@@ -102,9 +102,9 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 	pictureFile := &dto.PictureRequest{
 		Name:        file.Filename,
 		Destination: destination,
-		Height:      im.Height,
-		Width:       im.Width,
-		Size:        file.Size,
+		Height:      int32(im.Height),
+		Width:       int32(im.Width),
+		Size:        int32(file.Size),
 		ContentType: fileType,
 	}
 	if err != nil {

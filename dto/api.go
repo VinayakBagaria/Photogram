@@ -3,9 +3,9 @@ package dto
 type PictureRequest struct {
 	Name        string
 	Destination string
-	Height      int
-	Width       int
-	Size        int64
+	Height      int32
+	Width       int32
+	Size        int32
 	ContentType string
 }
 

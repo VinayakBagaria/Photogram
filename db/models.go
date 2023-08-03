@@ -14,9 +14,9 @@ type Picture struct {
 
 	Name        string `json:"name"`
 	Destination string `json:"destination"`
-	Height      int    `json:"height"`
-	Width       int    `json:"width"`
-	Size        int64  `json:"size"`
+	Height      int32  `json:"height"`
+	Width       int32  `json:"width"`
+	Size        int32  `json:"size"`
 	ContentType string `json:"content_type"`
 }
 
