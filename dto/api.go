@@ -17,7 +17,7 @@ type PictureResponse struct {
 	Url         string `json:"url"`
 	Height      int32  `json:"height"`
 	Width       int32  `json:"width"`
-	Size        int32  `json:"size"`
+	Size        string `json:"size"`
 	ContentType string `json:"content_type"`
 }
 

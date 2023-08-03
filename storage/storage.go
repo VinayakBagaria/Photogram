@@ -2,6 +2,9 @@ package storage
 
 import (
 	"errors"
+	"image"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"io/ioutil"
@@ -13,9 +16,19 @@ import (
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"golang.org/x/image/bmp"
+	"golang.org/x/image/tiff"
+	"golang.org/x/image/webp"
 )
 
-var ALLOWED_CONTENT_TYPES = [6]string{"image/jpeg", "image/png", "image/gif", "image/tiff", "image/bmp", "video/webm"}
+var CONTENT_DECODERS = map[string](func(r io.Reader) (image.Config, error)){
+	"image/jpeg": jpeg.DecodeConfig,
+	"image/png":  png.DecodeConfig,
+	"image/gif":  gif.DecodeConfig,
+	"image/tiff": tiff.DecodeConfig,
+	"image/webp": webp.DecodeConfig,
+	"image/bmp":  bmp.DecodeConfig,
+}
 
 type ImageStorage interface {
 	GetFullPath(string) string
@@ -59,15 +72,8 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 	}
 
 	fileType := http.DetectContentType(buffer)
-	isImage := false
-	for _, desiredContentType := range ALLOWED_CONTENT_TYPES {
-		if fileType == desiredContentType {
-			isImage = true
-			break
-		}
-	}
-
-	if !isImage {
+	decoder, ok := CONTENT_DECODERS[fileType]
+	if !ok {
 		return nil, &dto.InvalidPictureFileError{
 			StatusCode: http.StatusBadRequest,
 			Error:      errors.New("unsupported format"),
@@ -83,7 +89,7 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 		}
 	}
 
-	im, err := png.DecodeConfig(src)
+	imageConfig, err := decoder(src)
 	if err != nil {
 		return nil, &dto.InvalidPictureFileError{
 			StatusCode: http.StatusInternalServerError,
@@ -113,8 +119,8 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 	pictureFile := &dto.PictureRequest{
 		Name:        file.Filename,
 		Destination: destination,
-		Height:      int32(im.Height),
-		Width:       int32(im.Width),
+		Height:      int32(imageConfig.Height),
+		Width:       int32(imageConfig.Width),
 		Size:        int32(file.Size),
 		ContentType: fileType,
 	}

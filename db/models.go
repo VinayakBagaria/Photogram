@@ -28,7 +28,7 @@ func (p *Picture) ToPictureResponse() *dto.PictureResponse {
 		Url:         fmt.Sprintf("%s/picture/%d/image", config.GetConfigValue("server.host"), p.ID),
 		Height:      p.Height,
 		Width:       p.Width,
-		Size:        p.Size,
+		Size:        fmt.Sprintf("%.2f KB", float64(p.Size)/1024),
 		ContentType: p.ContentType,
 	}
 }
