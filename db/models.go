@@ -2,6 +2,7 @@ package db
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/VinayakBagaria/go-cat-pictures/config"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
@@ -30,5 +31,7 @@ func (p *Picture) ToPictureResponse() *dto.PictureResponse {
 		Width:       p.Width,
 		Size:        fmt.Sprintf("%.2f KB", float64(p.Size)/1024),
 		ContentType: p.ContentType,
+		CreatedOn:   time.UnixMilli(p.CreatedOn),
+		UpdatedOn:   time.UnixMilli(p.UpdatedOn),
 	}
 }

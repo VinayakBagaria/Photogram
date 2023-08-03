@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/VinayakBagaria/go-cat-pictures/db"
@@ -43,7 +44,11 @@ func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*db.Pi
 		return nil, err
 	}
 
-	p.db.Model(&pictureToUpdate).Updates(&request)
+	marshalledBytes, _ := json.Marshal(request)
+	requestMap := make(map[string]interface{})
+	json.Unmarshal(marshalledBytes, &requestMap)
+
+	p.db.Model(&pictureToUpdate).Updates(requestMap)
 	return pictureToUpdate, nil
 }
 

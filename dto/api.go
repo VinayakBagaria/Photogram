@@ -1,6 +1,10 @@
 package dto
 
-import "github.com/gin-gonic/gin"
+import (
+	"time"
+
+	"github.com/gin-gonic/gin"
+)
 
 type PictureRequest struct {
 	Name        string
@@ -12,13 +16,15 @@ type PictureRequest struct {
 }
 
 type PictureResponse struct {
-	Id          uint   `json:"id"`
-	Name        string `json:"name"`
-	Url         string `json:"url"`
-	Height      int32  `json:"height"`
-	Width       int32  `json:"width"`
-	Size        string `json:"size"`
-	ContentType string `json:"content_type"`
+	Id          uint      `json:"id"`
+	Name        string    `json:"name"`
+	Url         string    `json:"url"`
+	Height      int32     `json:"height"`
+	Width       int32     `json:"width"`
+	Size        string    `json:"size"`
+	ContentType string    `json:"content_type"`
+	CreatedOn   time.Time `json:"created_on"`
+	UpdatedOn   time.Time `json:"updated_on"`
 }
 
 type ListPicturesResponse struct {
