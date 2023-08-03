@@ -1,25 +1,29 @@
 package service
 
 import (
+	"mime/multipart"
+
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/repository"
+	"github.com/VinayakBagaria/go-cat-pictures/storage"
 )
 
 type PicturesService interface {
 	List() ([]dto.PictureResponse, error)
 	Get(int) (dto.PictureResponse, error)
 	GetFile(int) (string, error)
-	Create(dto.CreatePictureRequest) (dto.PictureResponse, error)
+	Create(*multipart.FileHeader) (dto.PictureResponse, error)
 	Delete(int) error
 	Update(int, dto.UpdatePictureRequest) (dto.PictureResponse, error)
 }
 
 type picturesService struct {
 	repository repository.PicturesRepository
+	storage    storage.Storage
 }
 
-func NewPicturesService(picturesRepository repository.PicturesRepository) PicturesService {
-	return &picturesService{repository: picturesRepository}
+func NewPicturesService(repository repository.PicturesRepository, storage storage.Storage) PicturesService {
+	return &picturesService{repository, storage}
 }
 
 func (s *picturesService) List() ([]dto.PictureResponse, error) {
@@ -53,7 +57,16 @@ func (s *picturesService) GetFile(id int) (string, error) {
 	return picture.Destination, nil
 }
 
-func (s *picturesService) Create(request dto.CreatePictureRequest) (dto.PictureResponse, error) {
+func (s *picturesService) Create(file *multipart.FileHeader) (dto.PictureResponse, error) {
+	destination, err := s.storage.Save(file)
+	if err != nil {
+		return dto.PictureResponse{}, err
+	}
+
+	var request dto.CreatePictureRequest
+	request.Name = file.Filename
+	request.Destination = destination
+
 	picture, err := s.repository.Create(request)
 	if err != nil {
 		return dto.PictureResponse{}, err

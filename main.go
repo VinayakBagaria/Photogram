@@ -12,6 +12,7 @@ import (
 	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/repository"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
+	"github.com/VinayakBagaria/go-cat-pictures/storage"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +26,8 @@ func main() {
 	}
 
 	repository := repository.NewPicturesRepository(dbHandler)
-	service := service.NewPicturesService(repository)
+	localStorage := storage.NewStorage("./images")
+	service := service.NewPicturesService(repository, localStorage)
 	handler := resthandlers.NewPicturesHandler(service)
 	routesList := routes.NewPicturesRoutes(handler)
 
@@ -33,6 +35,10 @@ func main() {
 	serverRoutesList := routes.NewServerRouteList(serverHandler)
 
 	router := gin.Default()
+	// Logger middleware will write the logs to gin.DefaultWriter = os.Stdout
+	router.Use(gin.Logger())
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	router.Use(gin.Recovery())
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
 	router.Static("/get-image", "./images")
 

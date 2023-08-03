@@ -2,14 +2,12 @@ package resthandlers
 
 import (
 	"net/http"
-	"path/filepath"
 	"strconv"
 
 	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 )
 
 type PicturesHandler interface {
@@ -78,25 +76,7 @@ func (h *picturesHandler) CreatePicture(c *gin.Context) {
 		return
 	}
 
-	extension := filepath.Ext(file.Filename)
-	newFileName := uuid.New().String() + extension
-
-	destination := "./images/" + newFileName
-
-	if err := c.SaveUploadedFile(file, destination); err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	var request dto.CreatePictureRequest
-	request.Name = file.Filename
-	request.Destination = newFileName
-	// if err := c.ShouldBind(&request); err != nil {
-	// 	restutil.WriteAsJson(c, http.StatusBadRequest, gin.H{"error_occurred": err.Error()})
-	// 	return
-	// }
-
-	response, err := h.svc.Create(request)
+	response, err := h.svc.Create(file)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
