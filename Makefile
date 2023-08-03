@@ -36,8 +36,8 @@ refreshdb: ## refreshes the database by removing the existing database and recre
 	docker-compose down
 	docker-compose up -d db
 	sleep 3
-	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists pictures'
-	docker-compose exec -T db psql -h localhost --user postgres -c 'create database pictures'
+	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists pictures-db'
+	docker-compose exec -T db psql -h localhost --user postgres -c 'create database pictures-db'
 
 ## Help Commands
 .PHONY: help

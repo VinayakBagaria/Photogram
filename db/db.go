@@ -6,7 +6,12 @@ import (
 )
 
 func NewConnection(cfg Configuration) (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open(cfg.Dsn()))
+	dialector := postgres.New(postgres.Config{
+		DSN:                  cfg.Dsn(),
+		PreferSimpleProtocol: true,
+	})
+	db, err := gorm.Open(dialector, &gorm.Config{})
+
 	if err != nil {
 		return nil, err
 	}

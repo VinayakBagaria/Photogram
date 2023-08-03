@@ -27,29 +27,6 @@ func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler
 	return &picturesHandler{svc: picturesService}
 }
 
-// Get a image
-// @Summary get a image
-// @Description Get a specified image file by its ID
-// @Param id path number true "Image Id"
-// @Success 200 {file} octet-stream
-// @Failure 500 {object} error
-// @Router /picture/{id}/image [get]
-func (h *picturesHandler) GetPictureFile(c *gin.Context) {
-	id, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
-		return
-	}
-
-	pictureDestination, err := h.svc.GetFile(id)
-	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
-		return
-	}
-
-	http.ServeFile(c.Writer, c.Request, pictureDestination)
-}
-
 func (h *picturesHandler) CreatePicture(c *gin.Context) {
 	file, err := c.FormFile("image")
 	if err != nil {
@@ -102,6 +79,29 @@ func (h *picturesHandler) ListPictures(c *gin.Context) {
 	}
 
 	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{Pictures: pictures})
+}
+
+// Get a image
+// @Summary get a image
+// @Description Get a specified image file by its ID
+// @Param id path number true "Image Id"
+// @Success 200 {file} octet-stream
+// @Failure 500 {object} error
+// @Router /picture/{id}/image [get]
+func (h *picturesHandler) GetPictureFile(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	pictureDestination, err := h.svc.GetFile(id)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	http.ServeFile(c.Writer, c.Request, pictureDestination)
 }
 
 func (h *picturesHandler) GetPicture(c *gin.Context) {
