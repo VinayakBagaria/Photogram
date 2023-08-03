@@ -2,6 +2,7 @@ package storage
 
 import (
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -11,6 +12,7 @@ import (
 
 type Storage interface {
 	Save(*multipart.FileHeader) (string, error)
+	Get(string) ([]byte, error)
 }
 
 type localStorage struct {
@@ -24,6 +26,7 @@ func NewStorage(path string) Storage {
 func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 	extension := filepath.Ext(file.Filename)
 	destination := uuid.New().String() + extension
+	path := s.path + "/" + destination
 
 	src, err := file.Open()
 	if err != nil {
@@ -31,7 +34,7 @@ func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 	}
 	defer src.Close()
 
-	out, err := os.Create(s.path + "/" + destination)
+	out, err := os.Create(path)
 	if err != nil {
 		return "", err
 	}
@@ -39,4 +42,16 @@ func (s *localStorage) Save(file *multipart.FileHeader) (string, error) {
 
 	_, err = io.Copy(out, src)
 	return destination, err
+}
+
+func (s *localStorage) Get(destination string) ([]byte, error) {
+	path := s.path + "/" + destination
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	body, err := ioutil.ReadAll(file)
+	return body, err
 }
