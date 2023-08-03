@@ -56,7 +56,19 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 }
 
 func (h *picturesHandler) GetPictureFile(c *gin.Context) {
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		restutil.WriteError(c, http.StatusBadRequest, err)
+		return
+	}
 
+	pictureDestination, err := h.svc.GetFile(id)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	http.ServeFile(c.Writer, c.Request, "./images/"+pictureDestination)
 }
 
 func (h *picturesHandler) CreatePicture(c *gin.Context) {

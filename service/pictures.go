@@ -8,6 +8,7 @@ import (
 type PicturesService interface {
 	List() ([]dto.PictureResponse, error)
 	Get(int) (dto.PictureResponse, error)
+	GetFile(int) (string, error)
 	Create(dto.CreatePictureRequest) (dto.PictureResponse, error)
 	Delete(int) error
 	Update(int, dto.UpdatePictureRequest) (dto.PictureResponse, error)
@@ -41,6 +42,15 @@ func (s *picturesService) Get(id int) (dto.PictureResponse, error) {
 	}
 
 	return picture.ToPictureResponse(), nil
+}
+
+func (s *picturesService) GetFile(id int) (string, error) {
+	picture, err := s.repository.GetById(id)
+	if err != nil {
+		return "", err
+	}
+
+	return picture.Destination, nil
 }
 
 func (s *picturesService) Create(request dto.CreatePictureRequest) (dto.PictureResponse, error) {
