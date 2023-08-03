@@ -7,11 +7,11 @@ import (
 )
 
 type PicturesRepository interface {
-	Create(dto.CreatePictureInput) (*db.Picture, error)
+	Create(dto.CreatePictureRequest) (*db.Picture, error)
 	GetById(int) (*db.Picture, error)
 	GetAll() ([]*db.Picture, error)
 	Delete(id int) error
-	Update(int, dto.UpdatePictureInput) (*db.Picture, error)
+	Update(int, dto.UpdatePictureRequest) (*db.Picture, error)
 }
 
 type picturesRepository struct {
@@ -22,8 +22,8 @@ func NewPicturesRepository(dbHandler *gorm.DB) PicturesRepository {
 	return &picturesRepository{db: dbHandler}
 }
 
-func (p *picturesRepository) Create(pictureInput dto.CreatePictureInput) (*db.Picture, error) {
-	picture := db.Picture{Name: pictureInput.Name, Url: pictureInput.Url}
+func (p *picturesRepository) Create(request dto.CreatePictureRequest) (*db.Picture, error) {
+	picture := db.Picture{Name: request.Name, Destination: request.Destination}
 	p.db.Create(&picture)
 	return &picture, nil
 }
@@ -50,12 +50,12 @@ func (p *picturesRepository) Delete(id int) error {
 	return nil
 }
 
-func (p *picturesRepository) Update(id int, pictureInput dto.UpdatePictureInput) (*db.Picture, error) {
+func (p *picturesRepository) Update(id int, request dto.UpdatePictureRequest) (*db.Picture, error) {
 	var pictureToUpdate *db.Picture
 	if err := p.db.Where("id=?", id).First(&pictureToUpdate).Error; err != nil {
 		return nil, err
 	}
 
-	p.db.Model(&pictureToUpdate).Updates(&pictureInput)
+	p.db.Model(&pictureToUpdate).Updates(&request)
 	return pictureToUpdate, nil
 }

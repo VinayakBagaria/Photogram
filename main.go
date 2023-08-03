@@ -30,6 +30,8 @@ func main() {
 	routesList := routes.NewPicturesRoutes(handlers)
 
 	router := gin.Default()
+	router.MaxMultipartMemory = 8 << 20 // 8 MiB
+	router.Static("/get-image", "./images")
 	routes.Install(router, routesList)
 
 	apiPort, err := strconv.Atoi(config.GetEnvString("server.port"))

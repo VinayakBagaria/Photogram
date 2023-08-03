@@ -1,11 +1,17 @@
 package dto
 
-type CreatePictureInput struct {
-	Name string `json:"name" binding:"required"`
-	Url  string `json:"url" binding:"required"`
+type CreatePictureRequest struct {
+	Name        string `form:"name" binding:"required"`
+	Destination string `form:"destination" binding:"required"`
 }
 
-type UpdatePictureInput struct {
+type UpdatePictureRequest struct {
+	Name string `form:"name"`
+	Url  string `form:"url"`
+}
+
+type PictureResponse struct {
+	Id   uint   `json:"id"`
 	Name string `json:"name"`
 	Url  string `json:"url"`
 }

@@ -2,17 +2,20 @@ package resthandlers
 
 import (
 	"net/http"
+	"path/filepath"
 	"strconv"
 
 	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 type PicturesHandler interface {
 	ListPictures(*gin.Context)
 	GetPicture(*gin.Context)
+	GetPictureFile(*gin.Context)
 	CreatePicture(*gin.Context)
 	DeletePicture(*gin.Context)
 	UpdatePicture(*gin.Context)
@@ -52,20 +55,42 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
 }
 
+func (h *picturesHandler) GetPictureFile(c *gin.Context) {
+
+}
+
 func (h *picturesHandler) CreatePicture(c *gin.Context) {
-	var input dto.CreatePictureInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	file, err := c.FormFile("image")
+	if err != nil {
 		restutil.WriteError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	picture, err := h.svc.Create(input)
+	extension := filepath.Ext(file.Filename)
+	newFileName := uuid.New().String() + extension
+
+	destination := "./images/" + newFileName
+
+	if err := c.SaveUploadedFile(file, destination); err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	var request dto.CreatePictureRequest
+	request.Name = file.Filename
+	request.Destination = newFileName
+	// if err := c.ShouldBind(&request); err != nil {
+	// 	restutil.WriteAsJson(c, http.StatusBadRequest, gin.H{"error_occurred": err.Error()})
+	// 	return
+	// }
+
+	response, err := h.svc.Create(request)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": picture})
+	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": response})
 }
 
 func (h *picturesHandler) DeletePicture(c *gin.Context) {
@@ -90,13 +115,13 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 		return
 	}
 
-	var input dto.UpdatePictureInput
-	if err := c.ShouldBindJSON(&input); err != nil {
+	var request dto.UpdatePictureRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
 		restutil.WriteError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	picture, err := h.svc.Update(id, input)
+	picture, err := h.svc.Update(id, request)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return

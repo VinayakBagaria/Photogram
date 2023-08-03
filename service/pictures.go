@@ -1,17 +1,16 @@
 package service
 
 import (
-	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/repository"
 )
 
 type PicturesService interface {
-	List() ([]*db.Picture, error)
-	Get(int) (*db.Picture, error)
-	Create(dto.CreatePictureInput) (*db.Picture, error)
+	List() ([]dto.PictureResponse, error)
+	Get(int) (dto.PictureResponse, error)
+	Create(dto.CreatePictureRequest) (dto.PictureResponse, error)
 	Delete(int) error
-	Update(int, dto.UpdatePictureInput) (*db.Picture, error)
+	Update(int, dto.UpdatePictureRequest) (dto.PictureResponse, error)
 }
 
 type picturesService struct {
@@ -22,19 +21,35 @@ func NewPicturesService(picturesRepository repository.PicturesRepository) Pictur
 	return &picturesService{repository: picturesRepository}
 }
 
-func (s *picturesService) List() ([]*db.Picture, error) {
+func (s *picturesService) List() ([]dto.PictureResponse, error) {
 	pictures, err := s.repository.GetAll()
-	return pictures, err
+	var pictureResponses []dto.PictureResponse
+	if err != nil {
+		return pictureResponses, err
+	}
+
+	for _, eachPicture := range pictures {
+		pictureResponses = append(pictureResponses, eachPicture.ToPictureResponse())
+	}
+	return pictureResponses, err
 }
 
-func (s *picturesService) Get(id int) (*db.Picture, error) {
+func (s *picturesService) Get(id int) (dto.PictureResponse, error) {
 	picture, err := s.repository.GetById(id)
-	return picture, err
+	if err != nil {
+		return dto.PictureResponse{}, err
+	}
+
+	return picture.ToPictureResponse(), nil
 }
 
-func (s *picturesService) Create(pictureInput dto.CreatePictureInput) (*db.Picture, error) {
-	picture, err := s.repository.Create(pictureInput)
-	return picture, err
+func (s *picturesService) Create(request dto.CreatePictureRequest) (dto.PictureResponse, error) {
+	picture, err := s.repository.Create(request)
+	if err != nil {
+		return dto.PictureResponse{}, err
+	}
+
+	return picture.ToPictureResponse(), nil
 }
 
 func (s *picturesService) Delete(id int) error {
@@ -42,7 +57,11 @@ func (s *picturesService) Delete(id int) error {
 	return err
 }
 
-func (s *picturesService) Update(id int, pictureInput dto.UpdatePictureInput) (*db.Picture, error) {
-	picture, err := s.repository.Update(id, pictureInput)
-	return picture, err
+func (s *picturesService) Update(id int, request dto.UpdatePictureRequest) (dto.PictureResponse, error) {
+	picture, err := s.repository.Update(id, request)
+	if err != nil {
+		return dto.PictureResponse{}, err
+	}
+
+	return picture.ToPictureResponse(), nil
 }
