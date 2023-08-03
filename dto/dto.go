@@ -6,8 +6,8 @@ type CreatePictureRequest struct {
 }
 
 type UpdatePictureRequest struct {
-	Name string `form:"name"`
-	Url  string `form:"url"`
+	Name        string `form:"name" binding:"required"`
+	Destination string `form:"destination" binding:"required"`
 }
 
 type PictureResponse struct {

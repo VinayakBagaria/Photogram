@@ -14,7 +14,7 @@ type PicturesService interface {
 	GetFile(int) (string, error)
 	Create(*multipart.FileHeader) (dto.PictureResponse, error)
 	Delete(int) error
-	Update(int, dto.UpdatePictureRequest) (dto.PictureResponse, error)
+	Update(int, *multipart.FileHeader) (dto.PictureResponse, error)
 }
 
 type picturesService struct {
@@ -80,7 +80,16 @@ func (s *picturesService) Delete(id int) error {
 	return err
 }
 
-func (s *picturesService) Update(id int, request dto.UpdatePictureRequest) (dto.PictureResponse, error) {
+func (s *picturesService) Update(id int, file *multipart.FileHeader) (dto.PictureResponse, error) {
+	destination, err := s.storage.Save(file)
+	if err != nil {
+		return dto.PictureResponse{}, err
+	}
+
+	var request dto.UpdatePictureRequest
+	request.Name = file.Filename
+	request.Destination = destination
+
 	picture, err := s.repository.Update(id, request)
 	if err != nil {
 		return dto.PictureResponse{}, err

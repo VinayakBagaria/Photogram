@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 	"github.com/gin-gonic/gin"
 )
@@ -107,13 +106,13 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 		return
 	}
 
-	var request dto.UpdatePictureRequest
-	if err := c.ShouldBindJSON(&request); err != nil {
+	file, err := c.FormFile("image")
+	if err != nil {
 		restutil.WriteError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	picture, err := h.svc.Update(id, request)
+	picture, err := h.svc.Update(id, file)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err)
 		return
