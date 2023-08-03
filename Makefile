@@ -39,11 +39,8 @@ test: ## runs the test cases
 	go test
 
 refreshdb: ## refreshes the database by removing the existing database and recreating it
-	docker-compose down
-	docker-compose up -d db
-	sleep 3
-	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists pictures-db'
-	docker-compose exec -T db psql -h localhost --user postgres -c 'create database pictures-db'
+	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists "pictures-db"'
+	docker-compose exec -T db psql -h localhost --user postgres -c 'create database "pictures-db"'
 
 ## Help Commands
 .PHONY: help

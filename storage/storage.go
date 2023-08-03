@@ -101,6 +101,7 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 	}
 	defer out.Close()
 
+	src.Seek(0, io.SeekStart)
 	_, err = io.Copy(out, src)
 	if err != nil {
 		return nil, &dto.InvalidPictureFileError{
