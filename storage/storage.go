@@ -2,7 +2,7 @@ package storage
 
 import (
 	"errors"
-	"image"
+	"image/png"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 )
 
@@ -48,15 +49,6 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 	}
 	defer src.Close()
 
-	out, err := os.Create(fullPath)
-	if err != nil {
-		return nil, &dto.InvalidPictureFileError{
-			StatusCode: http.StatusInternalServerError,
-			Error:      err,
-		}
-	}
-	defer out.Close()
-
 	buffer := make([]byte, 512)
 	_, err = src.Read(buffer)
 	if err != nil {
@@ -79,6 +71,7 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 		return nil, &dto.InvalidPictureFileError{
 			StatusCode: http.StatusBadRequest,
 			Error:      errors.New("unsupported format"),
+			Data:       gin.H{"format": fileType},
 		}
 	}
 
@@ -90,7 +83,25 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 		}
 	}
 
-	im, _, err := image.DecodeConfig(src)
+	im, err := png.DecodeConfig(src)
+	if err != nil {
+		return nil, &dto.InvalidPictureFileError{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err,
+			Data:       gin.H{"format": fileType},
+		}
+	}
+
+	out, err := os.Create(fullPath)
+	if err != nil {
+		return nil, &dto.InvalidPictureFileError{
+			StatusCode: http.StatusInternalServerError,
+			Error:      err,
+		}
+	}
+	defer out.Close()
+
+	_, err = io.Copy(out, src)
 	if err != nil {
 		return nil, &dto.InvalidPictureFileError{
 			StatusCode: http.StatusInternalServerError,
@@ -98,7 +109,6 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 		}
 	}
 
-	_, err = io.Copy(out, src)
 	pictureFile := &dto.PictureRequest{
 		Name:        file.Filename,
 		Destination: destination,
@@ -106,12 +116,6 @@ func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureReques
 		Width:       int32(im.Width),
 		Size:        int32(file.Size),
 		ContentType: fileType,
-	}
-	if err != nil {
-		return nil, &dto.InvalidPictureFileError{
-			StatusCode: http.StatusInternalServerError,
-			Error:      err,
-		}
 	}
 
 	return pictureFile, nil

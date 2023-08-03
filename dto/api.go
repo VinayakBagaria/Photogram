@@ -1,5 +1,7 @@
 package dto
 
+import "github.com/gin-gonic/gin"
+
 type PictureRequest struct {
 	Name        string
 	Destination string
@@ -10,9 +12,13 @@ type PictureRequest struct {
 }
 
 type PictureResponse struct {
-	Id   uint   `json:"id"`
-	Name string `json:"name"`
-	Url  string `json:"url"`
+	Id          uint   `json:"id"`
+	Name        string `json:"name"`
+	Url         string `json:"url"`
+	Height      int32  `json:"height"`
+	Width       int32  `json:"width"`
+	Size        int32  `json:"size"`
+	ContentType string `json:"content_type"`
 }
 
 type ListPicturesResponse struct {
@@ -22,4 +28,5 @@ type ListPicturesResponse struct {
 type InvalidPictureFileError struct {
 	StatusCode int
 	Error      error
+	Data       gin.H
 }

@@ -30,13 +30,13 @@ func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler
 func (h *picturesHandler) CreatePicture(c *gin.Context) {
 	file, err := c.FormFile("image")
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	response, createError := h.svc.Create(file)
-	if err != nil {
-		restutil.WriteError(c, createError.StatusCode, createError.Error)
+	if createError != nil {
+		restutil.WriteError(c, createError.StatusCode, createError.Error, createError.Data)
 		return
 	}
 
@@ -46,19 +46,19 @@ func (h *picturesHandler) CreatePicture(c *gin.Context) {
 func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	file, err := c.FormFile("image")
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	response, updatedError := h.svc.Update(id, file)
 	if err != nil {
-		restutil.WriteError(c, updatedError.StatusCode, updatedError.Error)
+		restutil.WriteError(c, updatedError.StatusCode, updatedError.Error, nil)
 		return
 	}
 
@@ -74,7 +74,7 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 func (h *picturesHandler) ListPictures(c *gin.Context) {
 	pictures, err := h.svc.List()
 	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
 
@@ -91,13 +91,13 @@ func (h *picturesHandler) ListPictures(c *gin.Context) {
 func (h *picturesHandler) GetPictureFile(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	pictureDestination, err := h.svc.GetFile(id)
 	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
 
@@ -107,13 +107,13 @@ func (h *picturesHandler) GetPictureFile(c *gin.Context) {
 func (h *picturesHandler) GetPicture(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	picture, err := h.svc.Get(id)
 	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err)
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
 
@@ -123,12 +123,12 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 func (h *picturesHandler) DeletePicture(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
 	if err := h.svc.Delete(id); err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 

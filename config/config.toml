@@ -1,6 +1,7 @@
 [server]
     port = "8000"
     imagePath = "./images"
+    host = "http://localhost:8000"
 
 [postgres]
     user = "gorm"

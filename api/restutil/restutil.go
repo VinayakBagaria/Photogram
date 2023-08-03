@@ -8,10 +8,10 @@ func WriteAsJson(c *gin.Context, statusCode int, data any) {
 	c.JSON(statusCode, data)
 }
 
-func WriteError(c *gin.Context, statusCode int, err error) {
-	e := "error"
-	if err != nil {
-		e = err.Error()
+func WriteError(c *gin.Context, statusCode int, err error, data gin.H) {
+	if data == nil {
+		data = gin.H{}
 	}
-	WriteAsJson(c, statusCode, gin.H{"error": e})
+	data["error"] = err.Error()
+	WriteAsJson(c, statusCode, data)
 }

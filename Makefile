@@ -12,12 +12,18 @@ build: ## builds for current OS and architecture
 	docker-compose down
 	docker-compose build
 
+cleanimages: ## removes all the stored images
+	rm -rf images/
+	mkdir -p images/
+
 ## Run Commands
 server: ## runs the essential services env in Docker
+	mkdir -p images/
 	go run main.go
 
 whole: ## runs the whole env in Docker
 	docker-compose down
+	mkdir -p images/
 	docker-compose up -d
 	go run main.go
 
