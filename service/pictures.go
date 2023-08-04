@@ -12,7 +12,7 @@ import (
 type PicturesService interface {
 	Create(*multipart.FileHeader) (*dto.PictureResponse, *dto.InvalidPictureFileError)
 	Update(int, *multipart.FileHeader) (*dto.PictureResponse, *dto.InvalidPictureFileError)
-	List() ([]*dto.PictureResponse, error)
+	List(int, int) ([]*dto.PictureResponse, int, error)
 	Get(int) (*dto.PictureResponse, error)
 	GetFile(int) (string, error)
 	Delete(int) error
@@ -61,17 +61,17 @@ func (s *picturesService) Update(id int, file *multipart.FileHeader) (*dto.Pictu
 	return picture.ToPictureResponse(), nil
 }
 
-func (s *picturesService) List() ([]*dto.PictureResponse, error) {
-	pictures, err := s.repository.GetAll()
+func (s *picturesService) List(limit, page int) ([]*dto.PictureResponse, int, error) {
+	pictures, totalCount, err := s.repository.GetAll(limit, page)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	pictureResponses := make([]*dto.PictureResponse, 0, len(pictures))
 	for _, eachPicture := range pictures {
 		pictureResponses = append(pictureResponses, eachPicture.ToPictureResponse())
 	}
-	return pictureResponses, err
+	return pictureResponses, totalCount, err
 }
 
 func (s *picturesService) Get(id int) (*dto.PictureResponse, error) {

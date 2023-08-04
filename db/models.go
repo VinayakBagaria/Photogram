@@ -22,6 +22,7 @@ type Picture struct {
 	ContentType string `json:"content_type"`
 }
 
+
 func (p *Picture) ToPictureResponse() *dto.PictureResponse {
 	return &dto.PictureResponse{
 		Id:          p.ID,

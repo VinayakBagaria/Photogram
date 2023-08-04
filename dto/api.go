@@ -29,10 +29,16 @@ type PictureResponse struct {
 
 type ListPicturesResponse struct {
 	Pictures []*PictureResponse `json:"pictures"`
+	Count    int                `json:"count"`
 }
 
 type InvalidPictureFileError struct {
 	StatusCode int
 	Error      error
 	Data       gin.H
+}
+
+type PaginationResponse struct {
+	Count int
+	Data  gin.H
 }

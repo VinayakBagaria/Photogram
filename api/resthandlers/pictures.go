@@ -72,13 +72,24 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 // @Failure 500 {object} error
 // @Router / [get]
 func (h *picturesHandler) ListPictures(c *gin.Context) {
-	pictures, err := h.svc.List()
+	page := c.Query("page")
+	if page == "" {
+		page = "10"
+	}
+
+	pageNumber, err := strconv.Atoi(page)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{Pictures: pictures})
+	pictures, totalCount, err := h.svc.List(10, pageNumber)
+	if err != nil {
+		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		return
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{Pictures: pictures, Count: totalCount})
 }
 
 // Get a image
