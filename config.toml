@@ -6,6 +6,6 @@
 [postgres]
     user = "gorm"
     password = "gorm"
-    host = "localhost"
+    host = "db"
     port = "5432"
     dbname = "pictures-db"

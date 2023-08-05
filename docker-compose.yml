@@ -6,7 +6,15 @@ services:
       - psql:/var/lib/postgresql/data
     ports:
       - 5432:5432
-
+  api:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    tty: true
 
 volumes:
   psql:

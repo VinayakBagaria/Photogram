@@ -24,8 +24,9 @@ server: ## runs the essential services env in Docker
 whole: ## runs the whole env in Docker
 	docker-compose down
 	mkdir -p images/
-	docker-compose up -d
-	go run main.go
+	docker-compose up -d db
+	sleep 4
+	docker-compose up api
 
 ## Service Commands
 services: ## runs the main services required to start an api server: db, broker, cache
@@ -33,7 +34,10 @@ services: ## runs the main services required to start an api server: db, broker,
 	docker-compose up -d db
 
 test: ## runs the test cases
-	go test ./...
+	make services
+	sleep 4
+	docker-compose run api go test ./...
+	docker-compose down
 
 swagger:
 	swag init
