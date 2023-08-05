@@ -1,7 +1,6 @@
 package service
 
 import (
-	"mime/multipart"
 	"reflect"
 	"strings"
 	"testing"
@@ -11,20 +10,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func newFile(fileName string) *multipart.FileHeader {
-	return &multipart.FileHeader{
-		Filename: fileName,
-		Size:     1000,
-	}
-}
-
 func TestServiceFunctions(t *testing.T) {
 	repo := NewFakeRepository()
 	storage := NewFakeStorage()
 	svc := NewPicturesService(repo, storage)
 
 	t.Run("create entry", func(t *testing.T) {
-		file := newFile(utils.NewUniqueString())
+		file := utils.NewTestFile(utils.NewUniqueString())
 		createResponse, errorState := svc.Create(file)
 		if errorState != nil {
 			assert.NotNil(t, errorState.Error)
@@ -42,7 +34,7 @@ func TestServiceFunctions(t *testing.T) {
 	})
 
 	t.Run("update entry", func(t *testing.T) {
-		file := newFile(utils.NewUniqueString())
+		file := utils.NewTestFile(utils.NewUniqueString())
 
 		allKeys := reflect.ValueOf(repo.data).MapKeys()
 		randomKey := int(allKeys[utils.NewRandomNumber(0, len(allKeys)-1)].Int())

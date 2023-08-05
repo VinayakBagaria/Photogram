@@ -33,6 +33,8 @@ func (s *picturesService) Create(file *multipart.FileHeader) (*dto.PictureRespon
 		return nil, createError
 	}
 
+	requestData.Size = int32(file.Size)
+
 	picture, err := s.repository.Create(requestData)
 	if err != nil {
 		return nil, &dto.InvalidPictureFileError{

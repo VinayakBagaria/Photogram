@@ -8,6 +8,7 @@ import (
 	"image/png"
 	"io"
 	"io/ioutil"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -41,6 +42,13 @@ type localImageStorage struct {
 }
 
 func NewStorage(path string) ImageStorage {
+	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
+		err := os.Mkdir(path, os.ModePerm)
+		if err != nil {
+			log.Fatalln("Unable to make directory: %w", path)
+		}
+	}
+
 	return &localImageStorage{path}
 }
 
