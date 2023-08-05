@@ -30,7 +30,9 @@ func TestServiceFunctions(t *testing.T) {
 		}
 
 		assertData(t, strings.HasSuffix(createResponse.Name, file.Filename), true)
-		assertData(t, createResponse.Id, repo.data[0].ID)
+		value, existsInStorage := repo.data[int(createResponse.Id)]
+		assertData(t, existsInStorage, true)
+		assertData(t, createResponse, value.ToPictureResponse())
 
 		entryId := int(createResponse.Id)
 		fileResponse, err := svc.Get(entryId)
@@ -40,7 +42,11 @@ func TestServiceFunctions(t *testing.T) {
 
 	t.Run("update entry", func(t *testing.T) {
 		file := newFile(NewUniqueString())
-		updateResponse, errorState := svc.Update(int(repo.data[0].ID), file)
+
+		allKeys := reflect.ValueOf(repo.data).MapKeys()
+		randomKey := int(allKeys[NewRandomNumber(0, len(allKeys)-1)].Int())
+
+		updateResponse, errorState := svc.Update(int(repo.data[randomKey].ID), file)
 
 		if errorState != nil {
 			assertNotNull(t, errorState.Error)
@@ -59,8 +65,8 @@ func TestServiceFunctions(t *testing.T) {
 		assertNull(t, err)
 		assertData(t, totalCount, len(listResponse))
 		assertData(t, totalCount, len(repo.data))
-		for index, eachResponse := range listResponse {
-			assertData(t, eachResponse, repo.data[index].ToPictureResponse())
+		for _, eachResponse := range listResponse {
+			assertData(t, eachResponse, repo.data[int(eachResponse.Id)].ToPictureResponse())
 		}
 	})
 
@@ -79,7 +85,7 @@ func TestServiceFunctions(t *testing.T) {
 		response, err := svc.Get(randomEntry)
 
 		assertNull(t, err)
-		assertData(t, response, repo.data[randomEntry-1].ToPictureResponse())
+		assertData(t, response, repo.data[int(response.Id)].ToPictureResponse())
 	})
 
 	t.Run("invalid get entry", func(t *testing.T) {

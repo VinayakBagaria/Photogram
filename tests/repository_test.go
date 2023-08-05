@@ -9,18 +9,19 @@ import (
 )
 
 type fakeRepository struct {
-	data []*db.Picture
+	data map[int]*db.Picture
 }
 
 func NewFakeRepository() *fakeRepository {
 	return &fakeRepository{
-		data: []*db.Picture{},
+		data: map[int]*db.Picture{},
 	}
 }
 
 func (f *fakeRepository) Create(request *dto.PictureRequest) (*db.Picture, error) {
+	rowId := len(f.data) + 1
 	picture := &db.Picture{
-		ID:          uint(len(f.data) + 1),
+		ID:          uint(rowId),
 		CreatedOn:   time.Now().Unix(),
 		UpdatedOn:   time.Now().Unix(),
 		Deleted:     false,
@@ -31,13 +32,14 @@ func (f *fakeRepository) Create(request *dto.PictureRequest) (*db.Picture, error
 		Size:        request.Size,
 		ContentType: request.ContentType,
 	}
-	f.data = append(f.data, picture)
+	f.data[rowId] = picture
 	return picture, nil
 }
 
 func (f *fakeRepository) Update(id int, request *dto.PictureRequest) (*db.Picture, error) {
-	for index, eachRow := range f.data {
-		if eachRow.ID == uint(id) {
+	rowId := uint(id)
+	for _, eachRow := range f.data {
+		if eachRow.ID == rowId {
 			updatedPicture := &db.Picture{
 				ID:        eachRow.ID,
 				CreatedOn: eachRow.CreatedOn,
@@ -51,7 +53,7 @@ func (f *fakeRepository) Update(id int, request *dto.PictureRequest) (*db.Pictur
 				Size:        request.Size,
 				ContentType: request.ContentType,
 			}
-			f.data[index] = updatedPicture
+			f.data[id] = updatedPicture
 			return updatedPicture, nil
 		}
 	}
@@ -60,11 +62,9 @@ func (f *fakeRepository) Update(id int, request *dto.PictureRequest) (*db.Pictur
 }
 
 func (f *fakeRepository) Delete(id int) error {
-	for index, eachRow := range f.data {
-		if eachRow.ID == uint(id) {
-			f.data = append(f.data[:index], f.data[index+1:]...)
-			return nil
-		}
+	if _, ok := f.data[id]; ok {
+		delete(f.data, id)
+		return nil
 	}
 	return errors.New("unable to find")
 }
@@ -81,14 +81,23 @@ func (f *fakeRepository) GetAll(limit, page int) ([]*db.Picture, int64, error) {
 		end = len(f.data)
 	}
 
-	return f.data[start:end], int64(len(f.data)), nil
+	keys := []int{}
+	for eachKey := range f.data {
+		keys = append(keys, eachKey)
+	}
+
+	limitedKeys := keys[start:end]
+	response := []*db.Picture{}
+	for _, eachKey := range limitedKeys {
+		response = append(response, f.data[eachKey])
+	}
+
+	return response, int64(len(f.data)), nil
 }
 
 func (f *fakeRepository) GetById(id int) (*db.Picture, error) {
-	for _, eachRow := range f.data {
-		if eachRow.ID == uint(id) {
-			return eachRow, nil
-		}
+	if val, ok := f.data[id]; ok {
+		return val, nil
 	}
 	return nil, errors.New("unable to find")
 }
