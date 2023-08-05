@@ -30,7 +30,6 @@ func main() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.Recovery())
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB
-	router.Static("/get-image", "./images")
 
 	// Set swagger data
 	docs.SwaggerInfo.Title = "Cat Pictures"

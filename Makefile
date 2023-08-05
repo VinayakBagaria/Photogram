@@ -17,7 +17,7 @@ cleanimages: ## removes all the stored images
 	mkdir -p images/
 
 ## Build and Test Commands
-server: ## runs the essential services env in Docker
+localserver: ## runs the essential services env in Docker
 	mkdir -p images/
 	go run main.go
 
@@ -25,6 +25,7 @@ whole: ## runs the whole env in Docker
 	docker-compose down
 	mkdir -p images/
 	docker-compose up -d db
+	docker-compose build api
 	sleep 4
 	docker-compose up api
 
