@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/go-cat-pictures/storage"
 )
 
 type fakeStorage struct {
@@ -13,7 +14,7 @@ type fakeStorage struct {
 	Contents      map[string][]byte
 }
 
-func NewFakeStorage() *fakeStorage {
+func NewFakeStorage() storage.ImageStorage {
 	return &fakeStorage{
 		BaseDirectory: "/some-place",
 		Contents:      make(map[string][]byte),

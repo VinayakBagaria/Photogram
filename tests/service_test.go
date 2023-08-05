@@ -18,7 +18,7 @@ func newFile(fileName string) *multipart.FileHeader {
 }
 
 func TestServiceFunctions(t *testing.T) {
-	repo := &FakeRepository{}
+	repo := NewFakeRepository()
 	storage := NewFakeStorage()
 	svc := service.NewPicturesService(repo, storage)
 
@@ -99,6 +99,7 @@ func TestServiceFunctions(t *testing.T) {
 
 	t.Run("invalid delete entry", func(t *testing.T) {
 		err := svc.Delete(-1)
+
 		assertNotNull(t, err)
 	})
 
