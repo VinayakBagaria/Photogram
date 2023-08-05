@@ -11,7 +11,6 @@ import (
 	"github.com/VinayakBagaria/go-cat-pictures/config"
 	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/docs"
-	"github.com/VinayakBagaria/go-cat-pictures/repository"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 	"github.com/VinayakBagaria/go-cat-pictures/storage"
 	"github.com/gin-gonic/gin"
@@ -42,7 +41,7 @@ func main() {
 		log.Panicln(err)
 	}
 
-	repository := repository.NewPicturesRepository(dbHandler)
+	repository := db.NewPicturesRepository(dbHandler)
 	localStorage := storage.NewStorage(config.GetConfigValue("server.imagePath"))
 	service := service.NewPicturesService(repository, localStorage)
 	handler := resthandlers.NewPicturesHandler(service)

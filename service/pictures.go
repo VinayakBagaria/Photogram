@@ -4,8 +4,8 @@ import (
 	"mime/multipart"
 	"net/http"
 
+	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
-	"github.com/VinayakBagaria/go-cat-pictures/repository"
 	"github.com/VinayakBagaria/go-cat-pictures/storage"
 )
 
@@ -19,11 +19,11 @@ type PicturesService interface {
 }
 
 type picturesService struct {
-	repository repository.PicturesRepository
+	repository db.PicturesRepository
 	storage    storage.ImageStorage
 }
 
-func NewPicturesService(repository repository.PicturesRepository, storage storage.ImageStorage) PicturesService {
+func NewPicturesService(repository db.PicturesRepository, storage storage.ImageStorage) PicturesService {
 	return &picturesService{repository, storage}
 }
 

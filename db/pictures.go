@@ -1,20 +1,19 @@
-package repository
+package db
 
 import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/VinayakBagaria/go-cat-pictures/db"
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"gorm.io/gorm"
 )
 
 type PicturesRepository interface {
-	Create(*dto.PictureRequest) (*db.Picture, error)
-	Update(int, *dto.PictureRequest) (*db.Picture, error)
+	Create(*dto.PictureRequest) (*Picture, error)
+	Update(int, *dto.PictureRequest) (*Picture, error)
 	Delete(id int) error
-	GetAll(int, int) ([]*db.Picture, int64, error)
-	GetById(int) (*db.Picture, error)
+	GetAll(int, int) ([]*Picture, int64, error)
+	GetById(int) (*Picture, error)
 }
 
 type picturesRepository struct {
@@ -25,8 +24,8 @@ func NewPicturesRepository(dbHandler *gorm.DB) PicturesRepository {
 	return &picturesRepository{db: dbHandler}
 }
 
-func (p *picturesRepository) Create(request *dto.PictureRequest) (*db.Picture, error) {
-	picture := db.Picture{
+func (p *picturesRepository) Create(request *dto.PictureRequest) (*Picture, error) {
+	picture := Picture{
 		Name:        request.Name,
 		Destination: request.Destination,
 		Height:      request.Height,
@@ -38,8 +37,8 @@ func (p *picturesRepository) Create(request *dto.PictureRequest) (*db.Picture, e
 	return &picture, nil
 }
 
-func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*db.Picture, error) {
-	var pictureToUpdate *db.Picture
+func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*Picture, error) {
+	var pictureToUpdate *Picture
 	if err := p.db.Where("id = ?", id).First(&pictureToUpdate).Error; err != nil {
 		return nil, err
 	}
@@ -53,7 +52,7 @@ func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*db.Pi
 }
 
 func (p *picturesRepository) Delete(id int) error {
-	result := p.db.Where("id = ?", id).Updates(db.Picture{Deleted: true})
+	result := p.db.Where("id = ?", id).Updates(Picture{Deleted: true})
 	if result.Error != nil {
 		return result.Error
 	}
@@ -65,16 +64,16 @@ func (p *picturesRepository) Delete(id int) error {
 	return nil
 }
 
-func (p *picturesRepository) GetAll(limit, page int) ([]*db.Picture, int64, error) {
-	var pictures []*db.Picture
+func (p *picturesRepository) GetAll(limit, page int) ([]*Picture, int64, error) {
+	var pictures []*Picture
 	p.db.Where("deleted = ?", false).Order("updated_on desc").Limit(limit).Offset(limit * (page - 1)).Find(&pictures)
 	var totalCount int64
-	p.db.Model(&db.Picture{}).Where("deleted = ?", false).Count(&totalCount)
+	p.db.Model(&Picture{}).Where("deleted = ?", false).Count(&totalCount)
 	return pictures, totalCount, nil
 }
 
-func (p *picturesRepository) GetById(id int) (*db.Picture, error) {
-	var picture *db.Picture
+func (p *picturesRepository) GetById(id int) (*Picture, error) {
+	var picture *Picture
 
 	if err := p.db.Where("id = ? AND deleted = ?", id, false).First(&picture).Error; err != nil {
 		return nil, err

@@ -22,7 +22,7 @@ func NewConnection(cfg Configuration) (*gorm.DB, error) {
 	log.Println("Successfully connecte to database")
 	db.Logger = logger.Default.LogMode(logger.Info)
 
-    log.Println("Running migrations")
+	log.Println("Running migrations")
 	db.AutoMigrate(&Picture{})
 
 	return db, nil
