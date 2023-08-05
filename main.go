@@ -19,7 +19,10 @@ import (
 )
 
 func main() {
-	config.Init()
+	err := config.Init("config", "./")
+	if err != nil {
+		log.Fatalln("Unable to read the config file: %w", err)
+	}
 
 	router := gin.Default()
 	// Logger middleware will write the logs to gin.DefaultWriter = os.Stdout

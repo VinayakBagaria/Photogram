@@ -1,22 +1,21 @@
 package config
 
 import (
-	"log"
 	"strings"
 
 	"github.com/spf13/viper"
 )
 
-func Init() error {
+func Init(name, path string) error {
 	// name of the config file
-	viper.SetConfigName("config")
+	viper.SetConfigName(name)
 
 	// path to look for the config file in
-	viper.AddConfigPath("./config")
+	viper.AddConfigPath(path)
 
 	err := viper.ReadInConfig()
 	if err != nil {
-		log.Fatalln("Unable to read the config file: %w", err)
+		return err
 	}
 
 	// define replacer
@@ -26,4 +25,8 @@ func Init() error {
 	viper.AutomaticEnv()
 
 	return nil
+}
+
+func GetConfigValue(key string) string {
+	return viper.GetString(key)
 }
