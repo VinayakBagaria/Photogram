@@ -1,4 +1,4 @@
-package tests
+package service
 
 import (
 	"errors"
@@ -7,6 +7,7 @@ import (
 
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/storage"
+	"github.com/VinayakBagaria/go-cat-pictures/utils"
 )
 
 type fakeStorage struct {
@@ -26,7 +27,7 @@ func (s *fakeStorage) GetFullPath(destination string) string {
 }
 
 func (s *fakeStorage) Save(file *multipart.FileHeader) (*dto.PictureRequest, *dto.InvalidPictureFileError) {
-	randomFileName := NewUniqueString() + "----" + file.Filename
+	randomFileName := utils.NewUniqueString() + "----" + file.Filename
 	destination := randomFileName + filepath.Ext(file.Filename)
 	pictureFile := &dto.PictureRequest{
 		Name:        randomFileName,

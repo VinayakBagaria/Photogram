@@ -14,8 +14,8 @@ import (
 	"path/filepath"
 
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/go-cat-pictures/utils"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"
 	"golang.org/x/image/webp"
@@ -50,7 +50,7 @@ func (s *localImageStorage) GetFullPath(destination string) string {
 
 func (s *localImageStorage) Save(file *multipart.FileHeader) (*dto.PictureRequest, *dto.InvalidPictureFileError) {
 	extension := filepath.Ext(file.Filename)
-	destination := uuid.New().String() + extension
+	destination := utils.NewUniqueString() + extension
 	fullPath := s.GetFullPath(destination)
 
 	src, err := file.Open()

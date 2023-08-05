@@ -16,7 +16,7 @@ cleanimages: ## removes all the stored images
 	rm -rf images/
 	mkdir -p images/
 
-## Run Commands
+## Build and Test Commands
 server: ## runs the essential services env in Docker
 	mkdir -p images/
 	go run main.go
@@ -27,16 +27,13 @@ whole: ## runs the whole env in Docker
 	docker-compose up -d
 	go run main.go
 
-
 ## Service Commands
 services: ## runs the main services required to start an api server: db, broker, cache
 	docker-compose down
 	docker-compose up -d db
 
 test: ## runs the test cases
-	docker-compose down
-	docker-compose up -d db
-	go test
+	go test ./...
 
 refreshdb: ## refreshes the database by removing the existing database and recreating it
 	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists "pictures-db"'
