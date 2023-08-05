@@ -13,7 +13,7 @@ type PicturesRepository interface {
 	Create(*dto.PictureRequest) (*db.Picture, error)
 	Update(int, *dto.PictureRequest) (*db.Picture, error)
 	Delete(id int) error
-	GetAll(int, int) ([]*db.Picture, int, error)
+	GetAll(int, int) ([]*db.Picture, int64, error)
 	GetById(int) (*db.Picture, error)
 }
 
@@ -65,12 +65,12 @@ func (p *picturesRepository) Delete(id int) error {
 	return nil
 }
 
-func (p *picturesRepository) GetAll(limit, page int) ([]*db.Picture, int, error) {
+func (p *picturesRepository) GetAll(limit, page int) ([]*db.Picture, int64, error) {
 	var pictures []*db.Picture
-	p.db.Where("deleted = ?", false).Order("updated_at desc").Limit(limit).Offset(limit * page).Find(&pictures)
+	p.db.Where("deleted = ?", false).Order("updated_on desc").Limit(limit).Offset(limit * (page - 1)).Find(&pictures)
 	var totalCount int64
-	p.db.Where("deleted = ?", false).Count(&totalCount)
-	return pictures, int(totalCount), nil
+	p.db.Model(&db.Picture{}).Where("deleted = ?", false).Count(&totalCount)
+	return pictures, totalCount, nil
 }
 
 func (p *picturesRepository) GetById(id int) (*db.Picture, error) {

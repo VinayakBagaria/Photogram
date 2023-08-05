@@ -74,7 +74,7 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 func (h *picturesHandler) ListPictures(c *gin.Context) {
 	page := c.Query("page")
 	if page == "" {
-		page = "10"
+		page = "1"
 	}
 
 	pageNumber, err := strconv.Atoi(page)

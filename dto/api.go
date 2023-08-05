@@ -29,7 +29,7 @@ type PictureResponse struct {
 
 type ListPicturesResponse struct {
 	Pictures []*PictureResponse `json:"pictures"`
-	Count    int                `json:"count"`
+	Count    int64              `json:"count"`
 }
 
 type InvalidPictureFileError struct {
