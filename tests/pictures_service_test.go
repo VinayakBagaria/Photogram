@@ -29,7 +29,7 @@ func TestApiHandlers(t *testing.T) {
 		}
 
 		assertData(t, true, strings.HasSuffix(createResponse.Name, file.Filename))
-		assertData(t, int(createResponse.Id), 1)
+		assertData(t, createResponse.Id, fakeRepo.data[0].ID)
 
 		fileResponse, err := svc.Get(int(createResponse.Id))
 		assertNoError(t, err)
@@ -38,7 +38,7 @@ func TestApiHandlers(t *testing.T) {
 
 	t.Run("update entry", func(t *testing.T) {
 		file := newFile(NewUniqueString())
-		updateResponse, errorState := svc.Update(1, file)
+		updateResponse, errorState := svc.Update(int(fakeRepo.data[0].ID), file)
 		if errorState != nil {
 			assertNoError(t, errorState.Error)
 		}
@@ -48,6 +48,19 @@ func TestApiHandlers(t *testing.T) {
 		fileResponse, err := svc.Get(int(updateResponse.Id))
 		assertNoError(t, err)
 		assertData(t, fileResponse.Name, updateResponse.Name)
+	})
+
+	t.Run("list entry", func(t *testing.T) {
+		listResponse, count, err := svc.List(10, 1)
+		totalCount := int(count)
+		assertNoError(t, err)
+
+		assertNoError(t, err)
+		assertData(t, totalCount, len(listResponse))
+		assertData(t, totalCount, len(fakeRepo.data))
+		for index, eachResponse := range listResponse {
+			assertData(t, eachResponse, fakeRepo.data[index].ToPictureResponse())
+		}
 	})
 }
 
