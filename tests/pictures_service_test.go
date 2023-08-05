@@ -17,81 +17,86 @@ func newFile(fileName string) *multipart.FileHeader {
 	}
 }
 
-func TestApiHandlers(t *testing.T) {
-	fakeRepo := &FakeRepository{}
-	fakeStorage := NewFakeStorage()
-	svc := service.NewPicturesService(fakeRepo, fakeStorage)
+func TestServiceFunctions(t *testing.T) {
+	repo := &FakeRepository{}
+	storage := NewFakeStorage()
+	svc := service.NewPicturesService(repo, storage)
 
 	t.Run("create entry", func(t *testing.T) {
 		file := newFile(NewUniqueString())
 		createResponse, errorState := svc.Create(file)
 		if errorState != nil {
-			assertNoError(t, errorState.Error)
+			assertNotNull(t, errorState.Error)
 		}
 
 		assertData(t, true, strings.HasSuffix(createResponse.Name, file.Filename))
-		assertData(t, createResponse.Id, fakeRepo.data[0].ID)
-
+		assertData(t, createResponse.Id, repo.data[0].ID)
 		fileResponse, err := svc.Get(int(createResponse.Id))
-		assertNoError(t, err)
+		assertNull(t, err)
 		assertData(t, fileResponse.Name, createResponse.Name)
 	})
 
 	t.Run("update entry", func(t *testing.T) {
 		file := newFile(NewUniqueString())
-		updateResponse, errorState := svc.Update(int(fakeRepo.data[0].ID), file)
+		updateResponse, errorState := svc.Update(int(repo.data[0].ID), file)
+
 		if errorState != nil {
-			assertNoError(t, errorState.Error)
+			assertNotNull(t, errorState.Error)
 		}
 
 		assertData(t, true, strings.HasSuffix(updateResponse.Name, file.Filename))
-
 		fileResponse, err := svc.Get(int(updateResponse.Id))
-		assertNoError(t, err)
+		assertNull(t, err)
 		assertData(t, fileResponse.Name, updateResponse.Name)
 	})
 
 	t.Run("list page", func(t *testing.T) {
 		listResponse, count, err := svc.List(10, 1)
 		totalCount := int(count)
-		assertNoError(t, err)
 
-		assertNoError(t, err)
+		assertNull(t, err)
 		assertData(t, totalCount, len(listResponse))
-		assertData(t, totalCount, len(fakeRepo.data))
+		assertData(t, totalCount, len(repo.data))
 		for index, eachResponse := range listResponse {
-			assertData(t, eachResponse, fakeRepo.data[index].ToPictureResponse())
+			assertData(t, eachResponse, repo.data[index].ToPictureResponse())
 		}
 	})
 
 	t.Run("out of bounds list page", func(t *testing.T) {
-		invalidPage := len(fakeRepo.data) + 1
+		invalidPage := len(repo.data) + 1
 		listResponse, count, err := svc.List(1, invalidPage)
 		totalCount := int(count)
 
-		assertNoError(t, err)
-		assertData(t, totalCount, len(fakeRepo.data))
+		assertNull(t, err)
+		assertData(t, totalCount, len(repo.data))
 		assertData(t, listResponse, []*dto.PictureResponse{})
 	})
 
-	t.Run("list entry", func(t *testing.T) {
-		listResponse, count, err := svc.List(10, 1)
-		totalCount := int(count)
-		assertNoError(t, err)
+	t.Run("get entry", func(t *testing.T) {
+		randomEntry := NewRandomNumber(1, len(repo.data))
+		response, err := svc.Get(randomEntry)
 
-		assertNoError(t, err)
-		assertData(t, totalCount, len(listResponse))
-		assertData(t, totalCount, len(fakeRepo.data))
-		for index, eachResponse := range listResponse {
-			assertData(t, eachResponse, fakeRepo.data[index].ToPictureResponse())
-		}
+		assertNull(t, err)
+		assertData(t, response, repo.data[randomEntry-1].ToPictureResponse())
+	})
+
+	t.Run("invalid get entry", func(t *testing.T) {
+		_, err := svc.Get(-1)
+		assertNotNull(t, err)
 	})
 }
 
-func assertNoError(t *testing.T, err error) {
+func assertNotNull(t *testing.T, val any) {
 	t.Helper()
-	if err != nil {
-		t.Fatal(err)
+	if val == nil {
+		t.Fatal(val)
+	}
+}
+
+func assertNull(t *testing.T, val any) {
+	t.Helper()
+	if val != nil {
+		t.Fatal(val)
 	}
 }
 
