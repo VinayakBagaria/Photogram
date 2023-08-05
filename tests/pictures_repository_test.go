@@ -64,7 +64,18 @@ func (f *FakeRepository) Delete(id int) error {
 }
 
 func (f *FakeRepository) GetAll(limit, page int) ([]*db.Picture, int64, error) {
-	return f.data, int64(len(f.data)), nil
+	start := (page - 1) * limit
+	end := start + limit + 1
+
+	if start >= len(f.data) {
+		return []*db.Picture{}, int64(len(f.data)), nil
+	}
+
+	if end > len(f.data) {
+		end = len(f.data)
+	}
+
+	return f.data[start:end], int64(len(f.data)), nil
 }
 
 func (f *FakeRepository) GetById(id int) (*db.Picture, error) {

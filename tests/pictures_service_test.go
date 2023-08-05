@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/VinayakBagaria/go-cat-pictures/service"
 )
 
@@ -48,6 +49,29 @@ func TestApiHandlers(t *testing.T) {
 		fileResponse, err := svc.Get(int(updateResponse.Id))
 		assertNoError(t, err)
 		assertData(t, fileResponse.Name, updateResponse.Name)
+	})
+
+	t.Run("list page", func(t *testing.T) {
+		listResponse, count, err := svc.List(10, 1)
+		totalCount := int(count)
+		assertNoError(t, err)
+
+		assertNoError(t, err)
+		assertData(t, totalCount, len(listResponse))
+		assertData(t, totalCount, len(fakeRepo.data))
+		for index, eachResponse := range listResponse {
+			assertData(t, eachResponse, fakeRepo.data[index].ToPictureResponse())
+		}
+	})
+
+	t.Run("out of bounds list page", func(t *testing.T) {
+		invalidPage := len(fakeRepo.data) + 1
+		listResponse, count, err := svc.List(1, invalidPage)
+		totalCount := int(count)
+
+		assertNoError(t, err)
+		assertData(t, totalCount, len(fakeRepo.data))
+		assertData(t, listResponse, []*dto.PictureResponse{})
 	})
 
 	t.Run("list entry", func(t *testing.T) {
