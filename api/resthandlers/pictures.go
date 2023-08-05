@@ -30,7 +30,7 @@ func NewPicturesHandler(picturesService service.PicturesService) PicturesHandler
 
 // Save an image
 // @Summary save an image
-// @Description Given a image file, save it in database and get its computed metadata
+// @Description Given a image file, save it & get its computed metadata
 // @Accept			multipart/form-data
 //
 //	@Param			image	formData	file			true	"upload image file"
@@ -55,6 +55,19 @@ func (h *picturesHandler) CreatePicture(c *gin.Context) {
 	restutil.WriteAsJson(c, http.StatusCreated, dto.SinglePictureResponse{Data: createdPicture})
 }
 
+// Update an image
+// @Summary update an image
+// @Description Given a image file and an id, update the record & get its computed metadata
+// @Accept			multipart/form-data
+// @Param id path number true "Image Id"
+//
+//	@Param			image	formData	file			true	"upload image file"
+//
+// @Success 202 {object} dto.SinglePictureResponse
+// @Failure 400 {object} dto.GeneralErrorResponse
+// @Failure 404 {object} dto.GeneralErrorResponse
+// @Failure 500 {object} dto.GeneralErrorResponse
+// @Router /picture/{id} [put]
 func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -68,13 +81,13 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 		return
 	}
 
-	response, updatedError := h.svc.Update(id, file)
-	if err != nil {
+	pictureResponse, updatedError := h.svc.Update(id, file)
+	if updatedError != nil {
 		restutil.WriteError(c, updatedError.StatusCode, updatedError.Error, nil)
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, gin.H{"data": response})
+	restutil.WriteAsJson(c, http.StatusAccepted, dto.SinglePictureResponse{Data: pictureResponse})
 }
 
 // List of pictures
@@ -173,7 +186,7 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 // @Summary delete a single image
 // @Description Delete a specified image along with its metadata by its ID
 // @Param id path number true "Image Id"
-// @Success 200 {object} dto.StringResponse
+// @Success 204 {object} dto.StringResponse
 // @Failure 400 {object} dto.GeneralErrorResponse
 // @Failure 500 {object} dto.GeneralErrorResponse
 // @Router /picture/{id} [delete]
@@ -189,5 +202,5 @@ func (h *picturesHandler) DeletePicture(c *gin.Context) {
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, dto.StringResponse{Message: "Successfully deleted"})
+	restutil.WriteAsJson(c, http.StatusNoContent, dto.StringResponse{Message: "Successfully deleted"})
 }

@@ -78,7 +78,7 @@ paths:
     post:
       consumes:
       - multipart/form-data
-      description: Given a image file, save it in database and get its computed metadata
+      description: Given a image file, save it & get its computed metadata
       parameters:
       - description: upload image file
         in: formData
@@ -109,8 +109,8 @@ paths:
         required: true
         type: number
       responses:
-        "200":
-          description: OK
+        "204":
+          description: No Content
           schema:
             $ref: '#/definitions/dto.StringResponse'
         "400":
@@ -144,6 +144,40 @@ paths:
           schema:
             $ref: '#/definitions/dto.GeneralErrorResponse'
       summary: get a single image data
+    put:
+      consumes:
+      - multipart/form-data
+      description: Given a image file and an id, update the record & get its computed
+        metadata
+      parameters:
+      - description: Image Id
+        in: path
+        name: id
+        required: true
+        type: number
+      - description: upload image file
+        in: formData
+        name: image
+        required: true
+        type: file
+      responses:
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/dto.SinglePictureResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.GeneralErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.GeneralErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/dto.GeneralErrorResponse'
+      summary: update an image
   /picture/{id}/image:
     get:
       description: Get a specified image file by its ID

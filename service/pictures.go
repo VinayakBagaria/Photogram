@@ -53,9 +53,9 @@ func (s *picturesService) Update(id int, file *multipart.FileHeader) (*dto.Pictu
 	}
 
 	picture, err := s.repository.Update(id, requestData)
-	if createError != nil {
+	if err != nil {
 		return nil, &dto.InvalidPictureFileError{
-			StatusCode: http.StatusInternalServerError,
+			StatusCode: http.StatusNotFound,
 			Error:      err,
 		}
 	}

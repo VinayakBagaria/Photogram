@@ -51,7 +51,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "Given a image file, save it in database and get its computed metadata",
+                "description": "Given a image file, save it \u0026 get its computed metadata",
                 "consumes": [
                     "multipart/form-data"
                 ],
@@ -121,6 +121,55 @@ const docTemplate = `{
                     }
                 }
             },
+            "put": {
+                "description": "Given a image file and an id, update the record \u0026 get its computed metadata",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "summary": "update an image",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Image Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "upload image file",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SinglePictureResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": "Delete a specified image along with its metadata by its ID",
                 "summary": "delete a single image",
@@ -134,8 +183,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "204": {
+                        "description": "No Content",
                         "schema": {
                             "$ref": "#/definitions/dto.StringResponse"
                         }

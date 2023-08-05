@@ -39,7 +39,8 @@ func (p *picturesRepository) Create(request *dto.PictureRequest) (*Picture, erro
 
 func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*Picture, error) {
 	var pictureToUpdate *Picture
-	if err := p.db.Where("id = ?", id).First(&pictureToUpdate).Error; err != nil {
+
+	if err := p.db.Where("id = ? AND deleted = ?", id, false).First(&pictureToUpdate).Error; err != nil {
 		return nil, err
 	}
 
@@ -47,12 +48,22 @@ func (p *picturesRepository) Update(id int, request *dto.PictureRequest) (*Pictu
 	requestMap := make(map[string]interface{})
 	json.Unmarshal(marshalledBytes, &requestMap)
 
-	p.db.Model(&pictureToUpdate).Updates(requestMap)
+	result := p.db.Model(&pictureToUpdate).Where("id = ? AND deleted = ?", id, false).Updates(requestMap)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, fmt.Errorf("record with id: %d not found", id)
+	}
+
+	fmt.Println("updating")
+	fmt.Println(pictureToUpdate)
+
 	return pictureToUpdate, nil
 }
 
 func (p *picturesRepository) Delete(id int) error {
-	result := p.db.Where("id = ?", id).Updates(Picture{Deleted: true})
+	result := p.db.Where("id = ? AND deleted = ?", id, false).Updates(Picture{Deleted: true})
 	if result.Error != nil {
 		return result.Error
 	}
