@@ -35,6 +35,9 @@ services: ## runs the main services required to start an api server: db, broker,
 test: ## runs the test cases
 	go test ./...
 
+swagger:
+	swag init
+
 refreshdb: ## refreshes the database by removing the existing database and recreating it
 	docker-compose exec -T db psql -h localhost --user postgres -c 'drop database if exists "pictures-db"'
 	docker-compose exec -T db psql -h localhost --user postgres -c 'create database "pictures-db"'

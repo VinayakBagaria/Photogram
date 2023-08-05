@@ -20,6 +20,15 @@ const docTemplate = `{
             "get": {
                 "description": "List of pictures along with its metadata",
                 "summary": "list of pictures",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "format": "number",
+                        "description": "page number starting from 1",
+                        "name": "page",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -66,25 +75,49 @@ const docTemplate = `{
         "dto.ListPicturesResponse": {
             "type": "object",
             "properties": {
+                "count": {
+                    "type": "integer"
+                },
                 "pictures": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/dto.PictureResponse"
                     }
+                },
+                "total_pages": {
+                    "type": "integer"
                 }
             }
         },
         "dto.PictureResponse": {
             "type": "object",
             "properties": {
+                "content_type": {
+                    "type": "string"
+                },
+                "created_on": {
+                    "type": "string"
+                },
+                "height": {
+                    "type": "integer"
+                },
                 "id": {
                     "type": "integer"
                 },
                 "name": {
                     "type": "string"
                 },
+                "size": {
+                    "type": "string"
+                },
+                "updated_on": {
+                    "type": "string"
+                },
                 "url": {
                     "type": "string"
+                },
+                "width": {
+                    "type": "integer"
                 }
             }
         }

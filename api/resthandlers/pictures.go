@@ -1,6 +1,7 @@
 package resthandlers
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -68,10 +69,12 @@ func (h *picturesHandler) UpdatePicture(c *gin.Context) {
 // List of pictures
 // @Summary list of pictures
 // @Description List of pictures along with its metadata
+// @Param page query string false "page number starting from 1" Format(number)
 // @Success 200 {object} dto.ListPicturesResponse
 // @Failure 500 {object} error
 // @Router / [get]
 func (h *picturesHandler) ListPictures(c *gin.Context) {
+	pageSize := 10
 	page := c.Query("page")
 	if page == "" {
 		page = "1"
@@ -79,17 +82,31 @@ func (h *picturesHandler) ListPictures(c *gin.Context) {
 
 	pageNumber, err := strconv.Atoi(page)
 	if err != nil {
-		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
+		restutil.WriteError(c, http.StatusBadRequest, err, nil)
 		return
 	}
 
-	pictures, totalCount, err := h.svc.List(10, pageNumber)
+	if pageNumber < 1 {
+		restutil.WriteError(c, http.StatusBadRequest, errors.New("page can't be less than 1"), nil)
+		return
+	}
+
+	pictures, totalCount, err := h.svc.List(pageSize, pageNumber)
 	if err != nil {
 		restutil.WriteError(c, http.StatusInternalServerError, err, nil)
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{Pictures: pictures, Count: totalCount})
+	totalPages := totalCount / pageSize
+	if (totalCount % pageSize) > 0 {
+		totalPages += 1
+	}
+
+	restutil.WriteAsJson(c, http.StatusOK, dto.ListPicturesResponse{
+		Pictures:   pictures,
+		Count:      totalCount,
+		TotalPages: totalPages,
+	})
 }
 
 // Get a image

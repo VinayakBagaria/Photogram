@@ -1,19 +1,35 @@
 definitions:
   dto.ListPicturesResponse:
     properties:
+      count:
+        type: integer
       pictures:
         items:
           $ref: '#/definitions/dto.PictureResponse'
         type: array
+      total_pages:
+        type: integer
     type: object
   dto.PictureResponse:
     properties:
+      content_type:
+        type: string
+      created_on:
+        type: string
+      height:
+        type: integer
       id:
         type: integer
       name:
         type: string
+      size:
+        type: string
+      updated_on:
+        type: string
       url:
         type: string
+      width:
+        type: integer
     type: object
 info:
   contact: {}
@@ -21,6 +37,12 @@ paths:
   /:
     get:
       description: List of pictures along with its metadata
+      parameters:
+      - description: page number starting from 1
+        format: number
+        in: query
+        name: page
+        type: string
       responses:
         "200":
           description: OK
