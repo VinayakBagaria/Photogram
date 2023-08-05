@@ -10,7 +10,7 @@
                 "summary": "list of pictures",
                 "parameters": [
                     {
-                        "type": "string",
+                        "type": "number",
                         "format": "number",
                         "description": "page number starting from 1",
                         "name": "page",
@@ -24,9 +24,121 @@
                             "$ref": "#/definitions/dto.ListPicturesResponse"
                         }
                     },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
-                        "schema": {}
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Given a image file, save it in database and get its computed metadata",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "summary": "save an image",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "upload image file",
+                        "name": "image",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SinglePictureResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/picture/{id}": {
+            "get": {
+                "description": "Get a specified image with its metadata by its ID",
+                "summary": "get a single image data",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Image Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.SinglePictureResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a specified image along with its metadata by its ID",
+                "summary": "delete a single image",
+                "parameters": [
+                    {
+                        "type": "number",
+                        "description": "Image Id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/dto.StringResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
                     }
                 }
             }
@@ -51,15 +163,35 @@
                             "type": "file"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {}
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/dto.GeneralErrorResponse"
+                        }
                     }
                 }
             }
         }
     },
     "definitions": {
+        "dto.GeneralErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string"
+                },
+                "meta": {
+                    "type": "object",
+                    "additionalProperties": {}
+                }
+            }
+        },
         "dto.ListPicturesResponse": {
             "type": "object",
             "properties": {
@@ -106,6 +238,22 @@
                 },
                 "width": {
                     "type": "integer"
+                }
+            }
+        },
+        "dto.SinglePictureResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.PictureResponse"
+                }
+            }
+        },
+        "dto.StringResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
                 }
             }
         }

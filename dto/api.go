@@ -15,6 +15,12 @@ type PictureRequest struct {
 	ContentType string
 }
 
+type InvalidPictureFileError struct {
+	StatusCode int
+	Error      error
+	Data       gin.H
+}
+
 type PictureResponse struct {
 	Id          uint      `json:"id"`
 	Name        string    `json:"name"`
@@ -33,13 +39,15 @@ type ListPicturesResponse struct {
 	TotalPages int                `json:"total_pages"`
 }
 
-type InvalidPictureFileError struct {
-	StatusCode int
-	Error      error
-	Data       gin.H
+type SinglePictureResponse struct {
+	Data *PictureResponse `json:"data"`
 }
 
-type PaginationResponse struct {
-	Count int
-	Data  gin.H
+type StringResponse struct {
+	Message string `json:"message"`
+}
+
+type GeneralErrorResponse struct {
+	Error string         `json:"error"`
+	Meta  map[string]any `json:"meta,omitempty"`
 }

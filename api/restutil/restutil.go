@@ -1,6 +1,7 @@
 package restutil
 
 import (
+	"github.com/VinayakBagaria/go-cat-pictures/dto"
 	"github.com/gin-gonic/gin"
 )
 
@@ -9,9 +10,6 @@ func WriteAsJson(c *gin.Context, statusCode int, data any) {
 }
 
 func WriteError(c *gin.Context, statusCode int, err error, data gin.H) {
-	if data == nil {
-		data = gin.H{}
-	}
-	data["error"] = err.Error()
-	WriteAsJson(c, statusCode, data)
+	errorObject := dto.GeneralErrorResponse{Error: err.Error(), Meta: data}
+	WriteAsJson(c, statusCode, errorObject)
 }
