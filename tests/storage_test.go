@@ -6,23 +6,22 @@ import (
 	"path/filepath"
 
 	"github.com/VinayakBagaria/go-cat-pictures/dto"
-	"github.com/VinayakBagaria/go-cat-pictures/storage"
 )
 
 type fakeStorage struct {
-	baseDirectory string
-	contents      map[string][]byte
+	BaseDirectory string
+	Contents      map[string][]byte
 }
 
-func NewFakeStorage() storage.ImageStorage {
+func NewFakeStorage() *fakeStorage {
 	return &fakeStorage{
-		baseDirectory: "/some-place",
-		contents:      make(map[string][]byte),
+		BaseDirectory: "/some-place",
+		Contents:      make(map[string][]byte),
 	}
 }
 
 func (s *fakeStorage) GetFullPath(destination string) string {
-	return s.baseDirectory + "/" + destination
+	return s.BaseDirectory + "/" + destination
 }
 
 func (s *fakeStorage) Save(file *multipart.FileHeader) (*dto.PictureRequest, *dto.InvalidPictureFileError) {
@@ -36,12 +35,12 @@ func (s *fakeStorage) Save(file *multipart.FileHeader) (*dto.PictureRequest, *dt
 		Size:        int32(file.Size),
 		ContentType: "image/jpeg",
 	}
-	s.contents[destination] = []byte(pictureFile.Name)
+	s.Contents[destination] = []byte(pictureFile.Name)
 	return pictureFile, nil
 }
 
 func (s *fakeStorage) Get(destination string) ([]byte, error) {
-	if val, ok := s.contents[destination]; ok {
+	if val, ok := s.Contents[destination]; ok {
 		return val, nil
 	}
 	return nil, errors.New("unable to find")

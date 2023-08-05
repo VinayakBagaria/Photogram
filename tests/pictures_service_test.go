@@ -29,9 +29,11 @@ func TestServiceFunctions(t *testing.T) {
 			assertNotNull(t, errorState.Error)
 		}
 
-		assertData(t, true, strings.HasSuffix(createResponse.Name, file.Filename))
+		assertData(t, strings.HasSuffix(createResponse.Name, file.Filename), true)
 		assertData(t, createResponse.Id, repo.data[0].ID)
-		fileResponse, err := svc.Get(int(createResponse.Id))
+
+		entryId := int(createResponse.Id)
+		fileResponse, err := svc.Get(entryId)
 		assertNull(t, err)
 		assertData(t, fileResponse.Name, createResponse.Name)
 	})
@@ -82,8 +84,24 @@ func TestServiceFunctions(t *testing.T) {
 
 	t.Run("invalid get entry", func(t *testing.T) {
 		_, err := svc.Get(-1)
+
 		assertNotNull(t, err)
 	})
+
+	t.Run("delete entry", func(t *testing.T) {
+		initialLength := len(repo.data)
+		randomEntry := NewRandomNumber(1, initialLength)
+		err := svc.Delete(randomEntry)
+
+		assertNull(t, err)
+		assertData(t, len(repo.data), initialLength-1)
+	})
+
+	t.Run("invalid delete entry", func(t *testing.T) {
+		err := svc.Delete(-1)
+		assertNotNull(t, err)
+	})
+
 }
 
 func assertNotNull(t *testing.T, val any) {
