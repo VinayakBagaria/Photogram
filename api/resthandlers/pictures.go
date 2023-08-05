@@ -186,8 +186,8 @@ func (h *picturesHandler) GetPicture(c *gin.Context) {
 // @Summary delete a single image
 // @Description Delete a specified image along with its metadata by its ID
 // @Param id path number true "Image Id"
-// @Success 204 {object} dto.StringResponse
-// @Failure 400 {object} dto.GeneralErrorResponse
+// @Success 200 {object} dto.StringResponse
+// @Failure 404 {object} dto.GeneralErrorResponse
 // @Failure 500 {object} dto.GeneralErrorResponse
 // @Router /picture/{id} [delete]
 func (h *picturesHandler) DeletePicture(c *gin.Context) {
@@ -198,9 +198,9 @@ func (h *picturesHandler) DeletePicture(c *gin.Context) {
 	}
 
 	if err := h.svc.Delete(id); err != nil {
-		restutil.WriteError(c, http.StatusBadRequest, err, nil)
+		restutil.WriteError(c, http.StatusNotFound, err, nil)
 		return
 	}
 
-	restutil.WriteAsJson(c, http.StatusNoContent, dto.StringResponse{Message: "Successfully deleted"})
+	restutil.WriteAsJson(c, http.StatusOK, dto.StringResponse{Message: "Successfully deleted"})
 }
