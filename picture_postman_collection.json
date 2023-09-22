@@ -1,0 +1,143 @@
+{
+	"info": {
+		"_postman_id": "bbfae453-0a46-4acc-8481-1fd6e70dd2b3",
+		"name": "Go Cat Pictures",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2476382"
+	},
+	"item": [
+		{
+			"name": "Get a picture file from id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/picture/19/image",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"picture",
+						"19",
+						"image"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a picture entry",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/vinayak/Desktop/pic2.jpeg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000/picture/14",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"picture",
+						"14"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a picture row with metadata",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/picture/19",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"picture",
+						"19"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a picture",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/picture/4",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"picture",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a new picture",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "image",
+							"type": "file",
+							"src": "/Users/vinayak/Downloads/serjan-midili-r6obQfUM2Ds-unsplash.jpg"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:8000",
+					"host": [
+						"localhost"
+					],
+					"port": "8000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List all pictures",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000?page=1",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
