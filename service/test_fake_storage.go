@@ -5,9 +5,9 @@ import (
 	"mime/multipart"
 	"path/filepath"
 
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
-	"github.com/VinayakBagaria/go-cat-pictures/storage"
-	"github.com/VinayakBagaria/go-cat-pictures/utils"
+	"github.com/VinayakBagaria/photogram/dto"
+	"github.com/VinayakBagaria/photogram/storage"
+	"github.com/VinayakBagaria/photogram/utils"
 )
 
 type fakeStorage struct {

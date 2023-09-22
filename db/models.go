@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/VinayakBagaria/go-cat-pictures/config"
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/photogram/config"
+	"github.com/VinayakBagaria/photogram/dto"
 )
 
 type Picture struct {

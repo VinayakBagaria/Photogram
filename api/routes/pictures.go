@@ -3,7 +3,7 @@ package routes
 import (
 	"net/http"
 
-	"github.com/VinayakBagaria/go-cat-pictures/api/resthandlers"
+	"github.com/VinayakBagaria/photogram/api/resthandlers"
 )
 
 func NewPicturesRoutes(handlers resthandlers.PicturesHandler) []*Route {

@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
-	"github.com/VinayakBagaria/go-cat-pictures/service"
+	"github.com/VinayakBagaria/photogram/api/restutil"
+	"github.com/VinayakBagaria/photogram/dto"
+	"github.com/VinayakBagaria/photogram/service"
 	"github.com/gin-gonic/gin"
 )
 

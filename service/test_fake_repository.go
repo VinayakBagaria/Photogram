@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/VinayakBagaria/go-cat-pictures/db"
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/photogram/db"
+	"github.com/VinayakBagaria/photogram/dto"
 )
 
 type fakeRepository struct {

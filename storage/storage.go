@@ -14,8 +14,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
-	"github.com/VinayakBagaria/go-cat-pictures/utils"
+	"github.com/VinayakBagaria/photogram/dto"
+	"github.com/VinayakBagaria/photogram/utils"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/image/bmp"
 	"golang.org/x/image/tiff"

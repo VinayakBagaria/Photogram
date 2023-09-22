@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/photogram/dto"
 	"gorm.io/gorm"
 )
 

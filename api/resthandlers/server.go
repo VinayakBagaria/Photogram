@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/VinayakBagaria/go-cat-pictures/api/restutil"
+	"github.com/VinayakBagaria/photogram/api/restutil"
 	"github.com/gin-gonic/gin"
 )
 

@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/VinayakBagaria/go-cat-pictures/utils"
+	"github.com/VinayakBagaria/photogram/utils"
 	"github.com/stretchr/testify/assert"
 )
 

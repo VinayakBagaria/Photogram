@@ -1,4 +1,4 @@
-module github.com/VinayakBagaria/go-cat-pictures
+module github.com/VinayakBagaria/photogram
 
 go 1.20
 

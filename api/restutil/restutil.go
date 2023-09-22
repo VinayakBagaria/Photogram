@@ -1,7 +1,7 @@
 package restutil
 
 import (
-	"github.com/VinayakBagaria/go-cat-pictures/dto"
+	"github.com/VinayakBagaria/photogram/dto"
 	"github.com/gin-gonic/gin"
 )
 

@@ -3,7 +3,7 @@ package db
 import (
 	"fmt"
 
-	"github.com/VinayakBagaria/go-cat-pictures/config"
+	"github.com/VinayakBagaria/photogram/config"
 )
 
 type Configuration interface {
