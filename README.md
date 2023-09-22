@@ -1,8 +1,4 @@
-# Picture Management
-
-## Description:
-
-This project is a RESTful API for uploading and managing cat pictures. Though my experience in backend engineering is in Python, I have chosen Golang to build my API service as Go supports interfaces, is type-safe, provides better error handling, is more developer friendly.
+# Picture Management REST API
 
 ## Functional requirements:
 
@@ -124,18 +120,12 @@ The project contains basic tests to validate the working of our service, as this
 
 ## Future work:
 
-1. Determine validity of a cat:
-The actual requirement suggests cat pictures, but that requires an image to be validated or we can find the probability of a cat in a picture by running a Tensorflow model with Python. Since Machine Learning and Training models is not my domain, I didn’t implement it due to time constraint.
-This article might actually help us with this kind of use case only: 
-
-[Image Recognition: Dogs vs Cats! (92%)](https://thedatafrog.com/en/articles/dogs-vs-cats/)
-
 1. Dominant colors:
 We can pre-process the image to find dominant colors which can be used by the UI to show as a placeholder till the actual image loads. Same can be done using article linked below:
 
 [Extract dominant colors of an image using Python - GeeksforGeeks](https://www.geeksforgeeks.org/extract-dominant-colors-of-an-image-using-python/amp/)
 
-1. Image resizing:
+2. Image resizing:
 We can also implement multiple sizes for images and store the compressed ones depending on various viewports. This kind of functionality is provided in services like Cloudinary.
 
 For the above improvements, we would go for Python as it is very supportive of image handling. We can use a Message System like RabbitMQ. The tasks will be pushed by our API server in Go whenever an image gets created or updated. A Python task server can pick up these tasks to compute various meta-data. These data can then be stored in our database for future references.
