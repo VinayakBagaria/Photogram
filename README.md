@@ -1,4 +1,4 @@
-# Picture Management REST API
+# Photogram
 
 ## Functional requirements:
 
